@@ -135,29 +135,93 @@ struct CalendarView: View {
     @FetchRequest(sortDescriptors: []) var reflection: FetchedResults<Reflection>
     
     @State private var dates = Date()
+    @State private var something = 0
     var body: some View {
         
         VStack{
-            DatePicker("test", selection: $dates, displayedComponents: .date)
-                .frame(width: 350, height: 300, alignment: .center)
-                .padding(EdgeInsets(top: 15, leading: 10, bottom: 0, trailing: 10))
-                .border(Color("Background"), width: 5)
-                .cornerRadius(5)
-                .datePickerStyle(.graphical)
+            
             Form{
-                ForEach(reflection){ reflect in
-                    if(Calendar.current.dateComponents([.year, .month, .day], from: reflect.date ?? Date()) == Calendar.current.dateComponents([.year, .month, .day], from: dates)){
-                        VStack{
-                            //new layout for cal view
-                            
-                        }//v
+                    HStack{
+                        Spacer()
+                        DatePicker("Pick A Date To Reflect On:",selection: $dates, displayedComponents: .date)
                         
+                            .datePickerStyle(.compact)
+                            .fontWeight(.light)
+                            
+                        Spacer()
+                    }
+                if(something == 0){
+                    Text("no")
+                }
+                
+                Section("Reflections"){
+                    
+                    ForEach(reflection){ reflect in
+                        if(Calendar.current.dateComponents([.year, .month, .day], from: reflect.date ?? Date()) == Calendar.current.dateComponents([.year, .month, .day], from: dates)){
+                            
+                                
+                                VStack{
+                                    
+                                    HStack{
+                                        Text("Title: \(reflect.name ?? "fail n")")
+                                            .fontWeight(.light)
+                                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
+                                        //.border(Color("Background"), width: 1)
+                                        
+                                        Spacer()
+                                    }
+                                    .onAppear{
+                                        something+=1
+                                    }
+                                    .onDisappear{
+                                        something-=1
+                                    }
+                                    HStack{
+                                        Text(reflect.date?.formatted(date: .omitted, time: .shortened) ?? "fail cata").fontWeight(.ultraLight)
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Text("Catagory: \(reflect.cata ?? "fail n")")
+                                            .font(.subheadline)
+                                            .fontWeight(.ultraLight)
+                                        //.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                        //.border(Color("Background"), width: 1)
+                                        
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Spacer()
+                                        Text(reflect.note ?? "fail note")
+                                            .multilineTextAlignment(.leading)
+                                            .fontWeight(.light)
+                                            .font(.title3)
+                                            .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                        //.border(Color("Background"), width: 1)
+                                        Spacer()
+                                    }
+                                    if(reflect.lon != 0){
+                                        ZStack{
+                                            MapView(place: IdentifiablePlace(id: UUID(), lat: reflect.lat, lon: reflect.lon))
+                                                .disabled(true)
+                                            Image(systemName: "location.circle.fill")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .foregroundColor(.blue)
+                                                .frame(width: 40, height: 40)
+                                                .disabled(true)
+                                        }
+                                    }
+                                }
+                            
+                            //v
+                            
+                            
                             
                         }//if
                     }//for
                 }//form
             }//V
-            
+        }
         }
     }
     /*
@@ -171,4 +235,11 @@ struct CalendarView: View {
         return arr
     }
      */
+
+struct CalendarView_Previews: PreviewProvider {
+    static var previews: some View {
+        CalendarView()
+        
+    }
+}
 
