@@ -20,8 +20,8 @@ struct TabsView: View {
                         })
                     CalendarView()
                         .tabItem({
-                            Image(systemName: "calendar")
-                            Text("Calendar")
+                            Image(systemName: "brain.head.profile")
+                            Text("Reflect")
                         })
                     SettingsView()
                         .tabItem({
