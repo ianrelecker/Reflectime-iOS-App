@@ -76,6 +76,7 @@ struct SettingsView: View {
                 Section("The Pro Zone"){
                     Button("Purchase Pro"){
                         setsub = true
+                        defaults.set(false, forKey: "warn")
                     }
                     .foregroundColor(Color(UIColor.systemBlue))
                     Button("Restore Purchases"){
@@ -112,7 +113,20 @@ struct SettingsView: View {
                     }
                 }
                 
-            }.onAppear{
+            }
+            .onDisappear{
+                NotificationClass().schedule(dateInput: notificationH)
+                let defaults = UserDefaults.standard
+                notificationH = defaults.object(forKey: "Date") as! Date
+                defaults.set(notificationToggle, forKey: "toggleNotify")
+                //defaults.set(showdate, forKey: "showdate")
+                print(Calendar.current.dateComponents([.minute], from: notificationH))
+                print(Calendar.current.dateComponents([.hour], from: notificationH))
+                defaults.set(sendNot, forKey: "sendNot")
+                defaults.set(showP, forKey: "showP")
+                print("HERE" + "\(sendNot)")
+            }
+            .onAppear{
                 /*
                 setprod()
                 print("g")
@@ -121,6 +135,7 @@ struct SettingsView: View {
             .sheet(isPresented: $setsub){
                 subscribeView().presentationDetents([PresentationDetent .large])
             }
+            /*
             .toolbar{
                 Button("Done", role: .cancel, action: {
                     NotificationClass().schedule(dateInput: notificationH)
@@ -136,7 +151,7 @@ struct SettingsView: View {
                     dismiss()
                 }).foregroundColor(Color.blue)
                 
-            }
+            }*/
             .navigationTitle("Settings")
         }
         

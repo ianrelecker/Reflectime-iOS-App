@@ -26,6 +26,11 @@ struct IntroView: View {
                         HStack{
                             Text("Hi, My name is Ian! 🤗\n\n\tI created Reflectime to create a better outlet to help reflect on your day. What is going well, what is going not so well.\n\n\tThe most important thing that we can do is to increase communication with ourselfs overtime, and I hope that Reflectime does that for you.")
                                 .fontWeight(.medium)
+                                .onAppear{
+                                    defaults.set(0, forKey: "views")
+                                    defaults.set(true, forKey: "showP")
+                                    defaults.set(true, forKey: "warn")
+                                }
                         }
                     }
                     Toggle(isOn: $locationOnI){

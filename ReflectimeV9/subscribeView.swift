@@ -42,17 +42,20 @@ struct subscribeView: View {
                     .frame(height: 1, alignment: .center)
                     .foregroundColor(Color("BackColor"))
                     .fixedSize()
-                 
-                ZStack{
-                    Rectangle()
-                        .foregroundColor(Color(UIColor.systemGray5))
-                        .frame(width: 380, height: 50, alignment: .center)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                    Text("You have reached the limit of free Reflections.\nWith Pro you can make unlimited Refelections.")
-                        .foregroundColor(Color.red)
-                        .fontWeight(.bold)
-                        .frame(width: 380)
+                
+                if(defaults.bool(forKey: "warn") == true){
+                    ZStack{
+                        Rectangle()
+                            .foregroundColor(Color(UIColor.systemGray5))
+                            .frame(width: 380, height: 50, alignment: .center)
+                            .cornerRadius(10)
+                            .shadow(radius: 5)
+                        Text("You have reached the limit of free uses.")
+                            .foregroundColor(Color.red)
+                            .fontWeight(.bold)
+                            .frame(width: 380)
+                            .multilineTextAlignment(.center)
+                    }
                 }
                 Rectangle()
                     .frame(height: 1, alignment: .center)
@@ -61,18 +64,19 @@ struct subscribeView: View {
                 
                 ZStack{
                     Rectangle()
-                        .frame(width: 380, height: 250, alignment: .center)
+                        .frame(width: 350, height: 160, alignment: .center)
                         .foregroundColor(Color.white)
                         //.fixedSize(horizontal: true, vertical: true)
                         .cornerRadius(30)
-                    Text("Hi, it's Ian.\nI work to make Reflectime the best it can be.\n\nTo do that I need your support,\nif you find Reflectime useful in any way\nplease consider getting Reflectime Pro.\n\nFor about the price of one coffee pod\nyou can help support me and my family.\nThank you.")
+                        .shadow(radius: 2)
+                    Text("Hi, it's Ian.\nI work to make Reflectime the best it can be.\n\nTo do that I need your support,\nplease consider getting Reflectime Pro.\n\nThank you.")
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color.black)
                 }
                 .frame(alignment: .center)
                 
                 Rectangle()
-                    .frame(height: 2, alignment: .center)
+                    .frame(height: 0, alignment: .center)
                     .foregroundColor(Color("BackColor"))
                  
                 //revenuecat code
@@ -112,7 +116,7 @@ struct subscribeView: View {
                     }
                 }
                 Rectangle()
-                    .frame(height: 15)
+                    .frame(height: 5)
                     .foregroundColor(Color("BackColor"))
                     
                 ZStack{
@@ -124,6 +128,7 @@ struct subscribeView: View {
                             let defaults = UserDefaults.standard
                             defaults.set(false, forKey: "sub")
                             defaults.set(true, forKey: "dis")
+                            defaults.set(true, forKey: "warn")
                             dismiss()
                             
                         }
