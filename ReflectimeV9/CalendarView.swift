@@ -136,29 +136,62 @@ struct CalendarView: View {
     
     @State private var dates = Date()
     @State private var something = 0
+    
+    @State private var dateSort  = false
+    
+    @State private var catasort = false
+    @State private var cat = "General"
+    var cats = ["General", "Personal", "Work", "Feelings", "Wishes", "Intrests"]
+    
+    
+    
     var body: some View {
+        
         
         VStack{
             
             Form{
-                    HStack{
-                        Spacer()
+                Section("Sort"){
+                    Toggle(isOn: $dateSort){
+                        Text("Sort By Day")
+                    }
+                    if(dateSort){
                         DatePicker("Pick A Date To Reflect On:",selection: $dates, displayedComponents: .date)
                         
                             .datePickerStyle(.compact)
                             .fontWeight(.light)
-                            
-                        Spacer()
                     }
-                if(something == 0){
-                    Text("no")
+                    Toggle(isOn: $catasort){
+                        Text("Sort By Catagory")
+                    }
+                    if(catasort){
+                        Picker(selection: $cat, label: Text("Choose a Catagory").fontWeight(.light)) {
+                            ForEach(cats, id: \.self){
+                                Text($0)
+                            }
+                        }
+                    }
+                    if(catasort == true || dateSort == true){
+                        Button("Reset Sort"){
+                            catasort = false
+                            dateSort = false
+                            dates = Date()
+                            cat = "General"
+                        }
+                    }
+                    
                 }
                 
+                
                 Section("Reflections"){
-                    
-                    ForEach(reflection){ reflect in
-                        if(Calendar.current.dateComponents([.year, .month, .day], from: reflect.date ?? Date()) == Calendar.current.dateComponents([.year, .month, .day], from: dates)){
-                            
+                    if(something == 0){
+                        Text("No Results, Try Another Query")
+                    }
+                    //date
+                    if(dateSort && !catasort){
+                        ForEach(reflection){ reflect in
+                            if(Calendar.current.dateComponents([.year, .month, .day], from: reflect.date ?? Date()) == Calendar.current.dateComponents([.year, .month, .day], from: dates)){
+                                
                                 
                                 VStack{
                                     
@@ -212,13 +245,137 @@ struct CalendarView: View {
                                         }
                                     }
                                 }
-                            
-                            //v
-                            
-                            
-                            
-                        }//if
-                    }//for
+                                
+                                //v
+                                
+                                
+                                
+                            }//if
+                        }//for
+                    }
+                    //cata
+                    if(catasort && !dateSort){
+                        ForEach(reflection){ reflect in
+                            if(cat == reflect.cata ?? "General" ){
+                                VStack{
+                                    
+                                    HStack{
+                                        Text("Title: \(reflect.name ?? "fail n")")
+                                            .fontWeight(.light)
+                                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
+                                        //.border(Color("Background"), width: 1)
+                                        
+                                        Spacer()
+                                    }
+                                    .onAppear{
+                                        something+=1
+                                    }
+                                    .onDisappear{
+                                        something-=1
+                                    }
+                                    HStack{
+                                        Text(reflect.date?.formatted(date: .omitted, time: .shortened) ?? "fail cata").fontWeight(.ultraLight)
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Text("Catagory: \(reflect.cata ?? "fail n")")
+                                            .font(.subheadline)
+                                            .fontWeight(.ultraLight)
+                                        //.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                        //.border(Color("Background"), width: 1)
+                                        
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Spacer()
+                                        Text(reflect.note ?? "fail note")
+                                            .multilineTextAlignment(.leading)
+                                            .fontWeight(.light)
+                                            .font(.title3)
+                                            .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                        //.border(Color("Background"), width: 1)
+                                        Spacer()
+                                    }
+                                    if(reflect.lon != 0){
+                                        ZStack{
+                                            MapView(place: IdentifiablePlace(id: UUID(), lat: reflect.lat, lon: reflect.lon))
+                                                .disabled(true)
+                                            Image(systemName: "location.circle.fill")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .foregroundColor(.blue)
+                                                .frame(width: 40, height: 40)
+                                                .disabled(true)
+                                        }
+                                    }
+                                }
+                                
+                                //v
+                                
+                                
+                                
+                            }
+                        }
+                    }
+                    if(catasort && dateSort){
+                        ForEach(reflection) { reflect in
+                            if(Calendar.current.dateComponents([.year, .month, .day], from: reflect.date ?? Date()) == Calendar.current.dateComponents([.year, .month, .day], from: dates) && cat == reflect.cata ?? "General"){
+                                VStack{
+                                    
+                                    HStack{
+                                        Text("Title: \(reflect.name ?? "fail n")")
+                                            .fontWeight(.light)
+                                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
+                                        //.border(Color("Background"), width: 1)
+                                        
+                                        Spacer()
+                                    }
+                                    .onAppear{
+                                        something+=1
+                                    }
+                                    .onDisappear{
+                                        something-=1
+                                    }
+                                    HStack{
+                                        Text(reflect.date?.formatted(date: .omitted, time: .shortened) ?? "fail cata").fontWeight(.ultraLight)
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Text("Catagory: \(reflect.cata ?? "fail n")")
+                                            .font(.subheadline)
+                                            .fontWeight(.ultraLight)
+                                        //.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                        //.border(Color("Background"), width: 1)
+                                        
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Spacer()
+                                        Text(reflect.note ?? "fail note")
+                                            .multilineTextAlignment(.leading)
+                                            .fontWeight(.light)
+                                            .font(.title3)
+                                            .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                        //.border(Color("Background"), width: 1)
+                                        Spacer()
+                                    }
+                                    if(reflect.lon != 0){
+                                        ZStack{
+                                            MapView(place: IdentifiablePlace(id: UUID(), lat: reflect.lat, lon: reflect.lon))
+                                                .disabled(true)
+                                            Image(systemName: "location.circle.fill")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .foregroundColor(.blue)
+                                                .frame(width: 40, height: 40)
+                                                .disabled(true)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                 }//form
             }//V
         }

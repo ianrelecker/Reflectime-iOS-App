@@ -19,6 +19,9 @@ struct ReflectimeV9App: App {
         }
     }
     init() {
+        
+        
+        
         //rev cat code
         Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: "appl_QlJQRSJGsQftOnEdMzVzhdUSQlq")
