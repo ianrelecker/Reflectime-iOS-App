@@ -181,20 +181,36 @@ struct CalendarView: View {
                                     }
                                 }
                             }
-                            if(catasort == true || dateSort == true){
+                            if(catasort == true || dateSort == true || reviewMonth == true){
                                 Button("Reset Sort"){
+                                    reviewMonth = false
                                     catasort = false
                                     dateSort = false
                                     dates = Date()
                                     cat = "General"
-                                }
+                                }.foregroundColor(Color(UIColor.systemBlue))
                             }
                             
                         }
                         
                         
                         Section("Results:"){
-                            
+                            if(something == 0 && !dateSort && !catasort && !reviewMonth){
+                                HStack{
+                                    Spacer()
+                                    ZStack{
+                                        Rectangle()
+                                            .frame(width: 250, height: 60, alignment: .center)
+                                            .foregroundColor(Color("BackColor"))
+                                            .cornerRadius(15)
+                                            .shadow(radius: 3)
+                                        Text("Sort Through Your Reflections!\nTry Using An Option Above.")
+                                            .fontWeight(.light)
+                                            .multilineTextAlignment(.center)
+                                    }
+                                    Spacer()
+                                }
+                            }
                             //reflect month
                             if(reviewMonth){
                                 ForEach(reflection){reflect in
@@ -463,21 +479,12 @@ struct CalendarView: View {
                     }
                     
                     //V
+                    Rectangle()
+                        .frame(width: 1, height: 0)
+                        .foregroundColor(Color("BackColor"))
+                        .ignoresSafeArea()
                 }
-                if(something == 0){
-                    ZStack{
-                        ZStack{
-                            Rectangle()
-                                .frame(width: 250, height: 60, alignment: .center)
-                                .foregroundColor(Color("BackColor"))
-                                .cornerRadius(15)
-                                .shadow(radius: 3)
-                            Text("Sorry, No Results For That.\nPlease Try Another Sort.")
-                                .fontWeight(.light)
-                                .multilineTextAlignment(.center)
-                        }
-                    }
-                }
+                
             }
         }
         else{

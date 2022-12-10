@@ -11,26 +11,28 @@ struct TabsView: View {
     var body: some View {
         VStack{
             
-            TabView{
-                ContentView()
-                    .tabItem({
-                        Image(systemName: "list.dash")
-                        Text("List")
-                    })
-                CalendarView()
-                    .tabItem({
-                        Image(systemName: "calendar")
-                        Text("Calendar")
-                    })
-                SettingsView()
-                    .tabItem({
-                        Image(systemName: "gear")
-                        Text("Settings")
-                        
-                    })
-
-            }
-            
+                TabView{
+                    
+                    ContentView()
+                        .tabItem({
+                            Image(systemName: "list.dash")
+                            Text("List")
+                        })
+                    CalendarView()
+                        .tabItem({
+                            Image(systemName: "calendar")
+                            Text("Calendar")
+                        })
+                    SettingsView()
+                        .tabItem({
+                            Image(systemName: "gear")
+                            Text("Settings")
+                            
+                        })
+                    
+                    
+                }.tableStyle(.inset)
+                
             
             
         }

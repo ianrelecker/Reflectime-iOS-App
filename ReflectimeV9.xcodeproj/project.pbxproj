@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		3C42CC3B293EE70A00EB94DE /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3C42CC3A293EE70A00EB94DE /* RevenueCat */; };
-		3C42CC3E293EE72100EB94DE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C42CC3D293EE72100EB94DE /* StoreKit.framework */; };
 		3C42CC40293EE89000EB94DE /* subscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C42CC3F293EE89000EB94DE /* subscribeView.swift */; };
 		3C4A1414290E321E0043B395 /* ReflectimeV9App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */; };
 		3C4A1416290E321E0043B395 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1415290E321E0043B395 /* ContentView.swift */; };
 		3C4A1418290E321F0043B395 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A1417290E321F0043B395 /* Assets.xcassets */; };
 		3C4A141B290E321F0043B395 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A141A290E321F0043B395 /* Preview Assets.xcassets */; };
 		3C4A142A290E3A5F0043B395 /* NoteAdd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1429290E3A5F0043B395 /* NoteAdd.swift */; };
+		3C62D52529443E3B001A028E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C42CC3D293EE72100EB94DE /* StoreKit.framework */; };
 		3C6371632933394B0082AB55 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6371622933394B0082AB55 /* NotificationHandler.swift */; };
 		3C836978293BC3680076FBBE /* Reflectime.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3C836976293BC3680076FBBE /* Reflectime.xcdatamodeld */; };
 		3C83697A293BC3D70076FBBE /* dataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C836979293BC3D70076FBBE /* dataController.swift */; };
@@ -60,7 +60,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C42CC3B293EE70A00EB94DE /* RevenueCat in Frameworks */,
-				3C42CC3E293EE72100EB94DE /* StoreKit.framework in Frameworks */,
+				3C62D52529443E3B001A028E /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,18 +353,18 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReflectimeV9/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reflectime;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow access to your location to correctly display Map features of the app. Please Select \"Allow When Using App\"";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is stored on device and kept private to you. No one else but you can see it. Your location data is only used on the map view of where you made the reflection in any reflection that has it enabled.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.1;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = Capstone.ReflectimeV9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -390,18 +390,18 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReflectimeV9/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reflectime;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow access to your location to correctly display Map features of the app. Please Select \"Allow When Using App\"";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is stored on device and kept private to you. No one else but you can see it. Your location data is only used on the map view of where you made the reflection in any reflection that has it enabled.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.1;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = Capstone.ReflectimeV9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
