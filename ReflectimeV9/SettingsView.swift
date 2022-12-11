@@ -84,7 +84,9 @@ struct SettingsView: View {
                     }
                     //adapted from https://www.hackingwithswift.com/quick-start/swiftui/how-to-show-an-alert
                     .alert("Restoring Purchases", isPresented: $alertV){
-                        Button("Okay", role: .cancel){}
+                        Button("Okay", role: .cancel){
+                            print(defaults.bool(forKey: "pro"))
+                        }
                     }
                     .foregroundColor(Color.blue)
                     .onTapGesture {
@@ -133,7 +135,7 @@ struct SettingsView: View {
                  */
             }
             .sheet(isPresented: $setsub){
-                subscribeView().presentationDetents([PresentationDetent .large])
+                subscribeView().presentationDetents([PresentationDetent .large]).interactiveDismissDisabled(true)
             }
             /*
             .toolbar{

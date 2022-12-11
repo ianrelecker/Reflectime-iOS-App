@@ -353,7 +353,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReflectimeV9/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reflectime;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is stored on device and kept private to you. No one else but you can see it. Your location data is only used on the map view of where you made the reflection in any reflection that has it enabled.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is only stored on device and kept private to you. No one else but you can see it. Your location data is used to display on the Map on a reflection where it is enabled.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -390,7 +390,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReflectimeV9/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reflectime;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is stored on device and kept private to you. No one else but you can see it. Your location data is only used on the map view of where you made the reflection in any reflection that has it enabled.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is only stored on device and kept private to you. No one else but you can see it. Your location data is used to display on the Map on a reflection where it is enabled.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

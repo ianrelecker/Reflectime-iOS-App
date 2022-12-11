@@ -246,12 +246,13 @@ struct ContentView: View {
                 }//end toolbar
                 .sheet(isPresented: $showdia){
                     subscribeView().presentationDetents([PresentationDetent .large])
+                        .interactiveDismissDisabled(true)
                 }
                 .sheet(isPresented: $showSettings){
                     SettingsView().presentationDetents([PresentationDetent .large])
                 }//end sett
                 .sheet(isPresented: $showIntro){
-                    IntroView().presentationDetents([PresentationDetent .fraction(0.9)])
+                    IntroView().presentationDetents([PresentationDetent .fraction(0.9)]).interactiveDismissDisabled(true)
                 }//end intro
                 .sheet(isPresented: $showAdd){
                     NoteAdd().presentationDetents([PresentationDetent .large])
@@ -277,6 +278,8 @@ struct ContentView: View {
                     Text("Create a new Reflection by clicking\nthe \"\(Image(systemName: "plus"))\" icon in the top right.")
                         .fontWeight(.light)
                         .multilineTextAlignment(.center)
+                        .fixedSize()
+                        .dynamicTypeSize(.medium)
                 }
                 
             }

@@ -147,13 +147,14 @@ struct CalendarView: View {
     
     let defaults = UserDefaults.standard
     
+    
     var body: some View {
         
-        if(defaults.bool(forKey: "pro") || defaults.integer(forKey: "views") < 300){
+        if(defaults.bool(forKey: "pro") == true || defaults.integer(forKey: "views") < 500){
             ZStack{
                 VStack{
                     if(defaults.bool(forKey: "pro") == false){
-                        Text("You have \(300 - defaults.integer(forKey: "views")) free results of sort remaining.")
+                        Text("You have \(500 - defaults.integer(forKey: "views")) free results of sort remaining.")
                     }
                     Form{
                         Section("Reflect"){
@@ -195,22 +196,7 @@ struct CalendarView: View {
                         
                         
                         Section("Results:"){
-                            if(something == 0 && !dateSort && !catasort && !reviewMonth){
-                                HStack{
-                                    Spacer()
-                                    ZStack{
-                                        Rectangle()
-                                            .frame(width: 250, height: 60, alignment: .center)
-                                            .foregroundColor(Color("BackColor"))
-                                            .cornerRadius(15)
-                                            .shadow(radius: 3)
-                                        Text("Sort Through Your Reflections!\nTry Using An Option Above.")
-                                            .fontWeight(.light)
-                                            .multilineTextAlignment(.center)
-                                    }
-                                    Spacer()
-                                }
-                            }
+                            
                             //reflect month
                             if(reviewMonth){
                                 ForEach(reflection){reflect in
@@ -479,12 +465,37 @@ struct CalendarView: View {
                     }
                     
                     //V
+                    /*
                     Rectangle()
                         .frame(width: 1, height: 0)
                         .foregroundColor(Color("BackColor"))
                         .ignoresSafeArea()
+                     */
+                    
+                    
+                    if(something == 0 && !dateSort && !catasort && !reviewMonth){
+                        HStack{
+                            Spacer()
+                            ZStack{
+                                Rectangle()
+                                    .frame(width: 250, height: 60, alignment: .center)
+                                    .foregroundColor(Color("BackColor"))
+                                    .cornerRadius(15)
+                                    .shadow(radius: 3)
+                                Text("Sort Through Your Reflections!\nTry Using An Option Above.")
+                                    .fixedSize()
+                                    .fontWeight(.light)
+                                    .multilineTextAlignment(.center)
+                                    .dynamicTypeSize(.medium)
+                            }
+                            Spacer()
+                        }
+                    }
+                    Spacer()
                 }
                 
+            }.onAppear{
+                print(defaults.bool(forKey: "pro"))
             }
         }
         else{

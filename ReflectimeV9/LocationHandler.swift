@@ -25,8 +25,8 @@ class locationHandler: NSObject, ObservableObject {
     
     func getuser() -> (Double, Double){
         
-        let latL = Double((user?.coordinate.latitude)!)
-        let lonL = Double((user?.coordinate.longitude)!)
+        let latL = Double((user?.coordinate.latitude) ?? 0.0)
+        let lonL = Double((user?.coordinate.longitude) ?? 0.0)
        
         return (latL, lonL)
     }

@@ -14,6 +14,7 @@ struct IntroView: View {
     @Environment(\.dismiss) var dismiss
     @State var notificationHI = notificationTimeI()
     @State var notificationToggleI = false
+    @State private var introToggleDisable = false
     
     let defaults = UserDefaults.standard
     
@@ -33,31 +34,52 @@ struct IntroView: View {
                                 }
                         }
                     }
-                    Toggle(isOn: $locationOnI){
-                        Text("Reflectime only uses location permissions to add a location to your reflections. \nFor your privacy, this is only stored on your device. Please allow access while using the app.")
-                            .fontWeight(.light)
-                    }
-                    .onTapGesture {
-                        
-                        if !locationOnI {
-                            locationAddHI.request()
+                    
+                    HStack{
+                        Text("Your location data is only stored on device and kept private to you. No one else but you can see it. Your location data is used to display on the Map on a reflection where it is enabled.").fontWeight(.light)
+                        ZStack{
+                            Rectangle()
+                                .frame(width: 100, height: 40, alignment: .center)
+                                .fixedSize()
+                                .foregroundColor(Color("BW"))
+                                .cornerRadius(15)
+                                .onTapGesture {
+                                    if !locationOnI {
+                                        locationAddHI.request()
+                                    }
+                                    if locationOnI {
+                                        locationAddHI.user = nil
+                                    }
+                                    locationOnI = true
+                                }
+                            Text("Activate")
+                                .foregroundColor(Color("WB"))
+                                .fontWeight(.light)
+                                .allowsHitTesting(false)
                         }
-                        if locationOnI {
-                            locationAddHI.user = nil
-                        }
-                        locationOnI.toggle()
                     }
                     
-                    Toggle(isOn: $notificationToggleI){
-                        Text("Like your location permission, notifications are used to remind you to reflect at the time you specify daily. Please click the toggle to the right and grant access.")
-                            .fontWeight(.light)
-                    }
-                    .onTapGesture {
-                        if(!notificationToggleI){
-                            NotificationClass().requestPermission()
+                    HStack{
+                        Text("Like your location permission, notifications are used to remind you to reflect at the time you specify daily. Please click the toggle to the right and grant access.").fontWeight(.light)
+                        ZStack{
+                            Rectangle()
+                                .frame(width: 100, height: 40, alignment: .center)
+                                .fixedSize()
+                                .foregroundColor(Color("BW"))
+                                .cornerRadius(15)
+                                .onTapGesture {
+                                    if(!notificationToggleI){
+                                        NotificationClass().requestPermission()
+                                    }
+                                    notificationToggleI = true
+                                }
+                            Text("Activate")
+                                .foregroundColor(Color("WB"))
+                                .fontWeight(.light)
+                                .allowsHitTesting(false)
                         }
-                        notificationToggleI.toggle()
                     }
+                    
                     
                     DatePicker("Select a time that you would want to be reminded to reflect. \nThis could be at the end of your day, or at another point where you have a few minutes of time.\n(You can change this in settings later.)",selection: $notificationHI, displayedComponents: .hourAndMinute)
                         .fontWeight(.light)
