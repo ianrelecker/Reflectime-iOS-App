@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-
+/*
 struct NoteDetailC: View {
     let reflection: Reflection
 
@@ -129,7 +129,7 @@ struct NoteDetailC: View {
         }
     }//body
 }//view
-
+*/
 
 struct CalendarView: View {
     @FetchRequest(sortDescriptors: []) var reflection: FetchedResults<Reflection>
@@ -144,6 +144,7 @@ struct CalendarView: View {
     var cats = ["General", "Personal", "Work", "Feelings", "Wishes", "Intrests"]
     
     @State private var reviewMonth = false
+    @State private var setsubC = false
     
     let defaults = UserDefaults.standard
     
@@ -154,7 +155,28 @@ struct CalendarView: View {
             ZStack{
                 VStack{
                     if(defaults.bool(forKey: "pro") == false){
-                        Text("You have \(500 - defaults.integer(forKey: "views")) free results of sort remaining.")
+                        Spacer()
+                        HStack{
+                            Spacer()
+                            ZStack{
+                                Rectangle()
+                                    .frame(width: 340, height: 30, alignment: .center)
+                                    .foregroundColor(Color("BackColor"))
+                                    .cornerRadius(10)
+                                    .shadow(radius: 3)
+                                    .onTapGesture{
+                                        setsubC = true
+                                        defaults.set(false, forKey: "warn")
+                                    }
+                                Text("You have \(500 - defaults.integer(forKey: "views")) free results of sort remaining.")
+                                    .fixedSize()
+                                    .fontWeight(.light)
+                                    .multilineTextAlignment(.center)
+                                    .dynamicTypeSize(.medium)
+                                    .allowsHitTesting(false)
+                            }
+                            Spacer()
+                        }
                     }
                     Form{
                         Section("Reflect"){
@@ -494,7 +516,11 @@ struct CalendarView: View {
                     Spacer()
                 }
                 
-            }.onAppear{
+            }
+            .sheet(isPresented: $setsubC){
+                subscribeView().presentationDetents([PresentationDetent .large]).interactiveDismissDisabled(true)
+            }
+            .onAppear{
                 print(defaults.bool(forKey: "pro"))
             }
         }
