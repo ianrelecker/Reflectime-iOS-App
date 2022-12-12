@@ -22,6 +22,8 @@ class DataController: ObservableObject {
         }
         //"B"
         container.viewContext.automaticallyMergesChangesFromParent = true
-        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        container.viewContext.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
+        
+        
     }
 }

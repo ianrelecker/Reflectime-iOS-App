@@ -263,7 +263,7 @@ struct ContentView: View {
                 }
                 
             }//end navview
-            
+            .navigationViewStyle(StackNavigationViewStyle())
             .onAppear{
                 UIApplication.shared.applicationIconBadgeNumber = 0
             }

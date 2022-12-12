@@ -154,8 +154,10 @@ struct SettingsView: View {
                 }).foregroundColor(Color.blue)
                 
             }*/
-            .navigationTitle("Settings")
+            
         }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationTitle("Settings")
         
     }
     
