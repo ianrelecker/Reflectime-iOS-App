@@ -34,7 +34,7 @@ struct SettingsView: View {
         //add about switching out prompts
         NavigationView{
             Form{
-                Section("Daily Notificaions"){
+                Section("Daily Notifications"){
                     DatePicker("Select A Time To Be Reminded To Reflect",selection: $notificationH, displayedComponents: .hourAndMinute)
                     
                     Toggle(isOn: $sendNot){

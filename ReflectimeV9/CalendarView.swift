@@ -241,7 +241,7 @@ struct CalendarView: View {
                                                 something-=1
                                             }
                                             HStack{
-                                                Text(reflect.date?.formatted(date: .omitted, time: .shortened) ?? "fail cata").fontWeight(.ultraLight)
+                                                Text(reflect.date?.formatted(date: .long, time: .omitted) ?? "fail cata").fontWeight(.ultraLight)
                                                 Spacer()
                                             }
                                             HStack{
