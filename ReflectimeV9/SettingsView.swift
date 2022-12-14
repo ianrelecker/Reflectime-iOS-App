@@ -115,7 +115,23 @@ struct SettingsView: View {
                     }
                 }
                 
+                Section("Support"){
+                    Button("Privacy Policy"){
+                        let urlP = URL(string: "https://justpaste.it/4ddk7")
+                        UIApplication.shared.open(urlP!)
+                    }.foregroundColor(Color.blue)
+                    Button("EULA"){
+                        let urlE = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
+                        UIApplication.shared.open(urlE!)
+                    }.foregroundColor(Color.blue)
+                    Button("Contact Us"){
+                        let urlC = URL(string: "https://www.reddit.com/r/Reflectime/")
+                        UIApplication.shared.open(urlC!)
+                    }.foregroundColor(Color.blue)
+                }
+                
             }
+            .navigationTitle("Settings")
             .onDisappear{
                 NotificationClass().schedule(dateInput: notificationH)
                 let defaults = UserDefaults.standard
@@ -156,8 +172,9 @@ struct SettingsView: View {
             }*/
             
         }
+        
         .navigationViewStyle(StackNavigationViewStyle())
-        .navigationTitle("Settings")
+        
         
     }
     

@@ -486,6 +486,7 @@ struct CalendarView: View {
                         
                     }
                     
+                    
                     //V
                     /*
                     Rectangle()
@@ -523,10 +524,13 @@ struct CalendarView: View {
             .onAppear{
                 print(defaults.bool(forKey: "pro"))
             }
+            
         }
+            
         else{
             subscribeView()
         }
+            
     }
     //func sortView() -> some View{}
 }
