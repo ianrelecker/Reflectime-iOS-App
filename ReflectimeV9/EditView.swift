@@ -79,7 +79,8 @@ struct EditView: View {
                                     }
                                 }
                                 Toggle(isOn: $includeLocation){
-                                    Text("Choose To Include The Location")
+                                    let tex = "(Cannot Be Undone.)"
+                                    Text("Remove The Location from this Reflection? \(Text(tex).foregroundColor(Color.red))")
                                         .fontWeight(.light)
                                 }
                                 
