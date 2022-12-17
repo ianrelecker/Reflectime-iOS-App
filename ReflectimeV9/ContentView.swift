@@ -172,25 +172,46 @@ struct ContentView: View {
                                 }
                                 
                                 label: {
-                                    HStack{
-                                        ZStack{
-                                            Rectangle()
-                                                .cornerRadius(15)
-                                                .foregroundColor(Color(UIColor.systemGray6))
-                                                .opacity(20)
-                                                .frame(width: 50)
+                                    VStack{
+                                        HStack{
+                                            ZStack{
+                                                Rectangle()
+                                                    .cornerRadius(15)
+                                                    .foregroundColor(Color(UIColor.systemGray6))
+                                                    .opacity(20)
+                                                    .frame(width: 50, height: 50)
+                                                VStack{
+                                                    Text(reflect.date?.formatted(.dateTime.month(.abbreviated)) ?? "Fail c")
+                                                        .foregroundColor(Color("First"))
+                                                        .fontWeight(.light)
+                                                    Text(reflect.date?.formatted(.dateTime.day()) ?? "Fail c")
+                                                        .fontWeight(.light)
+                                                        .foregroundColor(Color("First"))
+                                                }
+                                            }
+                                            
                                             VStack{
-                                                Text(reflect.date?.formatted(.dateTime.month(.abbreviated)) ?? "Fail c")
-                                                    .foregroundColor(Color("First"))
-                                                    .fontWeight(.light)
-                                                Text(reflect.date?.formatted(.dateTime.day()) ?? "Fail c")
-                                                    .fontWeight(.light)
-                                                    .foregroundColor(Color("First"))
+                                                HStack{
+                                                    Text(reflect.name ?? "Fail n")
+                                                        .font(.body)
+                                                        
+                                                    Spacer()
+                                                }
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
+                                                    .ignoresSafeArea()
+                                                HStack{
+                                                    
+                                                    let txt = (reflect.note ?? "Fail note").prefix(30)
+                                                    Text("\(String(txt))...")
+                                                        .fontWeight(.ultraLight)
+                                                        .dynamicTypeSize(.small)
+                                                    Spacer()
+                                                }
                                             }
                                         }
                                         
-                                        Text(reflect.name ?? "Fail n")
-                                            .fontWeight(.light)
                                     }
                                 }
                                 .allowsHitTesting(false)
@@ -344,7 +365,10 @@ struct ContentView: View {
        for offset in offsets{
            let reflection = reflections[offset]
            moc.delete(reflection)
+           try?moc.save()
+           
        }
+       
    }
     
     

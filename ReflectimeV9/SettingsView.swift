@@ -27,6 +27,8 @@ struct SettingsView: View {
     @State var alertProList = false
     @State var tex = ""
     
+
+    
     let defaults = UserDefaults.standard
     
     
@@ -34,6 +36,7 @@ struct SettingsView: View {
         //add about switching out prompts
         NavigationView{
             Form{
+
                 Section("Daily Notifications"){
                     DatePicker("Select A Time To Be Reminded To Reflect",selection: $notificationH, displayedComponents: .hourAndMinute)
                     
@@ -193,6 +196,8 @@ func showIntroF() -> Bool {
     return defaults.bool(forKey: "showIntro")
 }
 */
+
+
 
 func setsubF() -> Bool {
     let defaults = UserDefaults.standard

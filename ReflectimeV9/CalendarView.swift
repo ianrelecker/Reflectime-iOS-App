@@ -227,8 +227,9 @@ struct CalendarView: View {
                                         VStack{
                                             
                                             HStack{
-                                                Text("Title: \(reflect.name ?? "fail n")")
+                                                Text("\(reflect.name ?? "fail n")")
                                                     .fontWeight(.light)
+                                                    .font(.title2)
                                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
                                                 //.border(Color("Background"), width: 1)
                                                 
@@ -240,6 +241,9 @@ struct CalendarView: View {
                                             .onDisappear{
                                                 something-=1
                                             }
+                                            Rectangle()
+                                                .frame(height: 1)
+                                                .foregroundColor(Color("Background"))
                                             HStack{
                                                 Text(reflect.date?.formatted(date: .long, time: .omitted) ?? "fail cata").fontWeight(.ultraLight)
                                                 Spacer()
@@ -253,15 +257,24 @@ struct CalendarView: View {
                                                 
                                                 Spacer()
                                             }
-                                            HStack{
-                                                Spacer()
-                                                Text(reflect.note ?? "fail note")
-                                                    .multilineTextAlignment(.leading)
-                                                    .fontWeight(.light)
-                                                    .font(.title3)
-                                                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                                                //.border(Color("Background"), width: 1)
-                                                Spacer()
+                                            VStack{
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
+                                                HStack{
+                                                    Spacer()
+                                                    Text(reflect.note ?? "fail note")
+                                                        .multilineTextAlignment(.leading)
+                                                        .fontWeight(.light)
+                                                        .font(.title3)
+                                                        .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                                    
+                                                    
+                                                    Spacer()
+                                                }
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
@@ -293,8 +306,9 @@ struct CalendarView: View {
                                         VStack{
                                             
                                             HStack{
-                                                Text("Title: \(reflect.name ?? "fail n")")
+                                                Text("\(reflect.name ?? "fail n")")
                                                     .fontWeight(.light)
+                                                    .font(.title2)
                                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
                                                 //.border(Color("Background"), width: 1)
                                                 
@@ -306,6 +320,9 @@ struct CalendarView: View {
                                             .onDisappear{
                                                 something-=1
                                             }
+                                            Rectangle()
+                                                .frame(height: 1)
+                                                .foregroundColor(Color("Background"))
                                             HStack{
                                                 Text(reflect.date?.formatted(date: .omitted, time: .shortened) ?? "fail cata").fontWeight(.ultraLight)
                                                 Spacer()
@@ -319,15 +336,23 @@ struct CalendarView: View {
                                                 
                                                 Spacer()
                                             }
-                                            HStack{
-                                                Spacer()
-                                                Text(reflect.note ?? "fail note")
-                                                    .multilineTextAlignment(.leading)
-                                                    .fontWeight(.light)
-                                                    .font(.title3)
-                                                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                                                //.border(Color("Background"), width: 1)
-                                                Spacer()
+                                            VStack{
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
+                                                HStack{
+                                                    Spacer()
+                                                    Text(reflect.note ?? "fail note")
+                                                        .multilineTextAlignment(.leading)
+                                                        .fontWeight(.light)
+                                                        .font(.title3)
+                                                        .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                                    //.border(Color("Background"), width: 1)
+                                                    Spacer()
+                                                }
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
@@ -360,8 +385,9 @@ struct CalendarView: View {
                                         VStack{
                                             
                                             HStack{
-                                                Text("Title: \(reflect.name ?? "fail n")")
+                                                Text("\(reflect.name ?? "fail n")")
                                                     .fontWeight(.light)
+                                                    .font(.title2)
                                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
                                                 //.border(Color("Background"), width: 1)
                                                 
@@ -373,6 +399,9 @@ struct CalendarView: View {
                                             .onDisappear{
                                                 something-=1
                                             }
+                                            Rectangle()
+                                                .frame(height: 1)
+                                                .foregroundColor(Color("Background"))
                                             HStack{
                                                 Text(reflect.date?.formatted(date: .omitted, time: .shortened) ?? "fail cata").fontWeight(.ultraLight)
                                                 Spacer()
@@ -386,15 +415,23 @@ struct CalendarView: View {
                                                 
                                                 Spacer()
                                             }
-                                            HStack{
-                                                Spacer()
-                                                Text(reflect.note ?? "fail note")
-                                                    .multilineTextAlignment(.leading)
-                                                    .fontWeight(.light)
-                                                    .font(.title3)
-                                                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                                                //.border(Color("Background"), width: 1)
-                                                Spacer()
+                                            VStack{
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
+                                                HStack{
+                                                    Spacer()
+                                                    Text(reflect.note ?? "fail note")
+                                                        .multilineTextAlignment(.leading)
+                                                        .fontWeight(.light)
+                                                        .font(.title3)
+                                                        .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                                    //.border(Color("Background"), width: 1)
+                                                    Spacer()
+                                                }
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
@@ -426,8 +463,9 @@ struct CalendarView: View {
                                         VStack{
                                             
                                             HStack{
-                                                Text("Title: \(reflect.name ?? "fail n")")
+                                                Text("\(reflect.name ?? "fail n")")
                                                     .fontWeight(.light)
+                                                    .font(.title2)
                                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
                                                 //.border(Color("Background"), width: 1)
                                                 
@@ -439,6 +477,9 @@ struct CalendarView: View {
                                             .onDisappear{
                                                 something-=1
                                             }
+                                            Rectangle()
+                                                .frame(height: 1)
+                                                .foregroundColor(Color("Background"))
                                             HStack{
                                                 Text(reflect.date?.formatted(date: .omitted, time: .shortened) ?? "fail cata").fontWeight(.ultraLight)
                                                 Spacer()
@@ -452,15 +493,23 @@ struct CalendarView: View {
                                                 
                                                 Spacer()
                                             }
-                                            HStack{
-                                                Spacer()
-                                                Text(reflect.note ?? "fail note")
-                                                    .multilineTextAlignment(.leading)
-                                                    .fontWeight(.light)
-                                                    .font(.title3)
-                                                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                                                //.border(Color("Background"), width: 1)
-                                                Spacer()
+                                            VStack{
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
+                                                HStack{
+                                                    Spacer()
+                                                    Text(reflect.note ?? "fail note")
+                                                        .multilineTextAlignment(.leading)
+                                                        .fontWeight(.light)
+                                                        .font(.title3)
+                                                        .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                                    //.border(Color("Background"), width: 1)
+                                                    Spacer()
+                                                }
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundColor(Color("Background"))
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
