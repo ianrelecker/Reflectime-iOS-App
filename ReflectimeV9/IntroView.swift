@@ -35,6 +35,7 @@ struct IntroView: View {
                         }
                     }
                     
+                    
                     HStack{
                         Text("Your location data is only stored on device and kept private to you. No one else but you can see it. Your location data is used to display on the Map on a reflection where it is enabled.").fontWeight(.light)
                         ZStack{

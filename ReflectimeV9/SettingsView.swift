@@ -27,7 +27,7 @@ struct SettingsView: View {
     @State var alertProList = false
     @State var tex = ""
     
-
+    
     
     let defaults = UserDefaults.standard
     
@@ -36,7 +36,21 @@ struct SettingsView: View {
         //add about switching out prompts
         NavigationView{
             Form{
-
+                /*
+                //ADD THE NAME HERE AND THEN INTRODUCE IT ON THE NAV TITLE
+                Section{
+                    VStack{
+                        HStack{
+                            Text("Enter a Title: *")
+                            //.fontWeight(.bold)
+                            Spacer()
+                        }
+                        TextField("Title", text: $name)
+                            .foregroundColor(secondColor)
+                        
+                    }
+                }
+*/
                 Section("Daily Notifications"){
                     DatePicker("Select A Time To Be Reminded To Reflect",selection: $notificationH, displayedComponents: .hourAndMinute)
                     
@@ -49,7 +63,70 @@ struct SettingsView: View {
                         Text("Show Prompts When Creating A New Reflection")
                     }
                 }
-                Section("Give Permissions"){
+            
+                Section{
+                    Button("Purchase Pro"){
+                        setsub = true
+                        defaults.set(false, forKey: "warn")
+                    }
+                    .foregroundColor(Color(UIColor.systemBlue))
+                    Button("Restore Purchases"){
+                        alertV = true
+                    }
+                    //adapted from https://www.hackingwithswift.com/quick-start/swiftui/how-to-show-an-alert
+                    .alert("Restoring Purchases", isPresented: $alertV){
+                        Button("Okay", role: .cancel){
+                            print(defaults.bool(forKey: "pro"))
+                        }
+                    }
+                    .foregroundColor(Color.blue)
+                    .onTapGesture {
+                        
+                        //revcat
+                        Purchases.shared.restorePurchases { (customerInfo, error) in
+                            if customerInfo?.entitlements.all["Pro"]?.isActive == true {
+                                defaults.set(true, forKey: "pro")
+                            }else{
+                                defaults.set(false, forKey: "pro")
+                            }
+                        }
+                        
+                    }
+                    Button("Check For Pro"){
+                        if(defaults.bool(forKey: "pro") == true){
+                            tex = "You Are A Pro Member"
+                        }else{
+                            tex = "You Are Not Yet A Pro Member"
+                        }
+                        alertProList = true
+                    }
+                    .foregroundColor(Color.blue)
+                    .alert(tex, isPresented: $alertProList){
+                        Button("Okay", role: .cancel){}
+                    }
+                }header: {
+                    Text("The Pro Zone")
+                }footer: {
+                    Text("If you paid for Pro on another device and are not recieving your Pro features, click on \"Restore Purchases\"")
+                }
+                
+                
+                Section("Support"){
+                    Button("Privacy Policy"){
+                        let urlP = URL(string: "https://justpaste.it/4ddk7")
+                        UIApplication.shared.open(urlP!)
+                    }.foregroundColor(Color.blue)
+                    Button("EULA"){
+                        let urlE = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
+                        UIApplication.shared.open(urlE!)
+                    }.foregroundColor(Color.blue)
+                    Button("Contact Us"){
+                        let urlC = URL(string: "https://www.reddit.com/r/Reflectime/")
+                        UIApplication.shared.open(urlC!)
+                    }.foregroundColor(Color.blue)
+                }
+                
+                Section{
                     Button("Location Access"){
                         //
                     }
@@ -75,62 +152,10 @@ struct SettingsView: View {
                         }
                         notificationToggle.toggle()
                     }
-                }
-                Section("The Pro Zone"){
-                    Button("Purchase Pro"){
-                        setsub = true
-                        defaults.set(false, forKey: "warn")
-                    }
-                    .foregroundColor(Color(UIColor.systemBlue))
-                    Button("Restore Purchases"){
-                        alertV = true
-                    }
-                    //adapted from https://www.hackingwithswift.com/quick-start/swiftui/how-to-show-an-alert
-                    .alert("Restoring Purchases", isPresented: $alertV){
-                        Button("Okay", role: .cancel){
-                            print(defaults.bool(forKey: "pro"))
-                        }
-                    }
-                    .foregroundColor(Color.blue)
-                    .onTapGesture {
-                    
-                        //revcat
-                        Purchases.shared.restorePurchases { (customerInfo, error) in
-                            if customerInfo?.entitlements.all["Pro"]?.isActive == true {
-                                defaults.set(true, forKey: "pro")
-                            }else{
-                                defaults.set(false, forKey: "pro")
-                            }
-                        }
-                    
-                    }
-                    Button("Check For Pro"){
-                        if(defaults.bool(forKey: "pro") == true){
-                            tex = "You Are A Pro Member"
-                        }else{
-                            tex = "You Are Not Yet A Pro Member"
-                        }
-                        alertProList = true
-                    }
-                    .foregroundColor(Color.blue)
-                    .alert(tex, isPresented: $alertProList){
-                        Button("Okay", role: .cancel){}
-                    }
-                }
-                
-                Section("Support"){
-                    Button("Privacy Policy"){
-                        let urlP = URL(string: "https://justpaste.it/4ddk7")
-                        UIApplication.shared.open(urlP!)
-                    }.foregroundColor(Color.blue)
-                    Button("EULA"){
-                        let urlE = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
-                        UIApplication.shared.open(urlE!)
-                    }.foregroundColor(Color.blue)
-                    Button("Contact Us"){
-                        let urlC = URL(string: "https://www.reddit.com/r/Reflectime/")
-                        UIApplication.shared.open(urlC!)
-                    }.foregroundColor(Color.blue)
+                } header: {
+                    Text("Prompt for Access")
+                } footer: {
+                    Text("These buttons will prompt the system for access for your location or notifications.\nIf nothing appears after you click these buttons,  enable this functionality in Settings.\nScroll down on the main page to \"Reflectime\" and provide access.")
                 }
                 
             }
