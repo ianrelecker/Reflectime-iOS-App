@@ -35,7 +35,7 @@ struct NoteDetail: View {
                     Section{
                         VStack{
                             HStack{
-                                Text("Title of your Reflection:")
+                                Text("Title:")
                                     .foregroundColor(Color("Background"))
                                     .fontWeight(.light)
                                     .opacity(5)
@@ -70,7 +70,7 @@ struct NoteDetail: View {
                                 Text(reflection.note ?? "Fail")
                                     .foregroundColor(Color("Background"))
                                     .font(.title2)
-                                    .fontWeight(.light)
+                                    
                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
                                     //.border(Color(UIColor.systemGray4), width: 4)
                                     .cornerRadius(5)
@@ -79,14 +79,16 @@ struct NoteDetail: View {
                             }
                         }
                     }
-                    Text("Created: " + "\(reflection.date?.formatted(date: .complete, time: .shortened) ?? Date().formatted())")
+                    Text("\(reflection.date?.formatted(date: .complete, time: .shortened) ?? Date().formatted())")
                                             .foregroundColor(Color("Background"))
                                             .font(.caption)
                     VStack{
                              if (reflection.lon != 0){
-                             Text("You were here when this reflection was created:").foregroundColor(Color("Background"))
+                                 /*
+                             Text("You were here:").foregroundColor(Color("Background"))
                              .frame(maxWidth: .infinity, alignment: .leading)
                              .font(.caption)
+                                 */
                                  ZStack{
                                      MapView(place: IdentifiablePlace(id: UUID(), lat: reflection.lat, lon: reflection.lon))
                                          .disabled(true)
@@ -201,13 +203,16 @@ struct ContentView: View {
                                                     .frame(height: 1)
                                                     .foregroundColor(Color("Background"))
                                                     .ignoresSafeArea()
+                                                    .padding(EdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0))
                                                 HStack{
                                                     
                                                     let txt = (reflect.note ?? "Fail note")
+                                                        
                                                     TextField(txt, text: $holdingdisText)
-                                                        .fontWeight(.light)
+                                                        .fontWeight(.medium)
                                                         .disabled(true)
                                                         .allowsHitTesting(false)
+                                                        .padding(EdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0))
                                                     /*
                                                     Text("\(String(txt))...")
                                                         .fontWeight(.ultraLight)
