@@ -50,7 +50,7 @@ struct NoteAdd: View {
                 ZStack{
                     Form{
                         //change to show edit warning
-                        //if(defaults.bool(forKey: "showP")){
+                        //if(defaults.bool(forKey: "showP")){}
                             Section{
                                 VStack{
                                     HStack{
@@ -82,6 +82,7 @@ struct NoteAdd: View {
                                                 }
                                         }.frame(width: 40, height: 40, alignment: .trailing)
                                     }
+                                    
                                 }
                             }
                         
@@ -142,6 +143,19 @@ struct NoteAdd: View {
                                         .foregroundColor(Color(UIColor.darkGray))
                                         .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0))
                                     
+                                }
+                                HStack{
+                                    if(defaults.bool(forKey: "showP")){
+                                        NavigationLink{
+                                            PromptView()
+                                        } label: {
+                                            Text("Click Here To Customize Your Prompts!")
+                                                .foregroundColor(Color.blue)
+                                                .fontWeight(.light)
+                                        }
+                                                
+                                        
+                                    }
                                 }
                             }
                         }
