@@ -204,8 +204,6 @@ struct ContentView: View {
                                                 HStack{
                                                     
                                                     let txt = (reflect.note ?? "Fail note")
-                                                        .prefix(30)
-                                                        
                                                     TextField(txt, text: $holdingdisText)
                                                         .fontWeight(.light)
                                                         .disabled(true)
