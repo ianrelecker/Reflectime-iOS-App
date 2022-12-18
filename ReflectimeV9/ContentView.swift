@@ -236,13 +236,6 @@ struct ContentView: View {
                             Text("Count: \(reflections.count)")
                         }
                     }
-                    /*
-                    Button{
-                        showSettings = true
-                    }label: {
-                        Image(systemName: "gear")
-                    }//end button
-                     */
                     EditButton().disabled(editdis())
                     Button{
                         print("\(getPro())" + "GetPro")
@@ -304,39 +297,9 @@ struct ContentView: View {
                 }
                 
             }
+            Spacer()
         }//end Z
         
-        /*
-        if(showcount){
-            ZStack{
-                if(reflections.count == 0){
-                    Rectangle()
-                        .cornerRadius(15)
-                        .foregroundColor(Color(UIColor.systemGray6))
-                        .opacity(20)
-                        .frame(height: 50)
-                    HStack{
-                        Spacer()
-                        Text("You don't have any reflections. Use the \"Plus\" icon at the top right to create one.")
-                            .fontWeight(.light)
-                            .multilineTextAlignment(.center)
-                            .onAppear{
-                                defaults.set(true, forKey: "showP")
-                            }
-                        Spacer()
-                    }
-                }else{
-                    Rectangle()
-                        .cornerRadius(15)
-                        .foregroundColor(Color(UIColor.systemGray6))
-                        .opacity(20)
-                        .frame(width: 100, height: 50)
-                    Text("Count: " + "\(reflections.count)")
-                        .fontWeight(.light)
-                }
-            }
-        }
-        */
         
     }//end body
 

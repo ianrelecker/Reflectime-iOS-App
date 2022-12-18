@@ -429,6 +429,7 @@ struct CalendarView: View {
                     Spacer()
                 }
                 .onAppear{
+                    /*
                     Purchases.shared.restorePurchases { (customerInfo, error) in
                         if customerInfo?.entitlements.all["Pro"]?.isActive == true {
                             defaults.set(true, forKey: "pro")
@@ -436,6 +437,7 @@ struct CalendarView: View {
                             defaults.set(false, forKey: "pro")
                         }
                     }
+                    */
                 }
                 
             }

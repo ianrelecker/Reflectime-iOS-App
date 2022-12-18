@@ -15,7 +15,7 @@ struct subscribeView: View {
     @State private var currentOffering: Offering?
     let defaults = UserDefaults.standard
     
-    
+    @State var alertV = false
     
     var body: some View {
         ZStack{
@@ -66,7 +66,7 @@ struct subscribeView: View {
                     Rectangle()
                         .frame(width: 350, height: 160, alignment: .center)
                         .foregroundColor(Color.white)
-                        //.fixedSize(horizontal: true, vertical: true)
+                        .fixedSize()
                         .cornerRadius(30)
                         .shadow(radius: 2)
                     Text("Hi, it's Ian.\nI work to make Reflectime the best it can be.\n\nTo do that I need your support,\nplease consider getting Reflectime Pro.\n\nThank you.")
@@ -116,14 +116,41 @@ struct subscribeView: View {
                     }
                 }
                 Rectangle()
-                    .frame(height: 5)
+                    .frame(height: 0, alignment: .center)
                     .foregroundColor(Color("BackColor"))
-                    
+                
                 ZStack{
                     Rectangle()
-                        .frame(width: 125, height: 40, alignment: .center)
+                        .frame(width: 200, height: 40, alignment: .center)
                         .foregroundColor(Color(UIColor.systemGray4))
-                        .cornerRadius(10)
+                        .cornerRadius(15)
+                        .alert("Restoring Purchases", isPresented: $alertV){
+                            Button("Okay", role: .cancel){
+                                print(defaults.bool(forKey: "pro"))
+                            }
+                        }
+                        .onTapGesture {
+                            Purchases.shared.restorePurchases { (customerInfo, error) in
+                                if customerInfo?.entitlements.all["Pro"]?.isActive == true {
+                                    defaults.set(true, forKey: "pro")
+                                }else{
+                                    defaults.set(false, forKey: "pro")
+                                }
+                            }
+                        }
+                    Text("Restore Purchases")
+                        .allowsHitTesting(false)
+                        .fontWeight(.bold)
+                        //.foregroundColor(Color.white)
+                }
+                
+                
+                
+                ZStack{
+                    Rectangle()
+                        .frame(width: 100, height: 40, alignment: .center)
+                        .foregroundColor(Color(UIColor.systemGray4))
+                        .cornerRadius(20)
                         .onTapGesture {
                             let defaults = UserDefaults.standard
                             defaults.set(false, forKey: "sub")
@@ -133,7 +160,7 @@ struct subscribeView: View {
                             
                         }
                     Text("Cancel")
-                        .fontWeight(.ultraLight)
+                        .fontWeight(.light)
                         .allowsHitTesting(false)
                 }
             }

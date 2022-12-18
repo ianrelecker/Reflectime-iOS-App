@@ -26,6 +26,7 @@ struct ReflectimeV9App: App {
         //This code is adapted from https://www.revenuecat.com/docs/getting-started
         Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: "appl_QlJQRSJGsQftOnEdMzVzhdUSQlq")
+        /*
         let defaults = UserDefaults.standard
         Purchases.shared.restorePurchases { (customerInfo, error) in
             if customerInfo?.entitlements.all["Pro"]?.isActive == true {
@@ -34,6 +35,7 @@ struct ReflectimeV9App: App {
                 defaults.set(false, forKey: "pro")
             }
         }
+         */
         //
     }
 }
