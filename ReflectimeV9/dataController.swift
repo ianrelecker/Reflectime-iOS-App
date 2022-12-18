@@ -12,9 +12,19 @@ import CoreData
 
 class DataController: ObservableObject {
     let container = NSPersistentCloudKitContainer(name: "Reflectime")
+    let containerM = NSPersistentCloudKitContainer(name: "Motivations")
     
     
     init(){
+        containerM.loadPersistentStores{ description, error in
+            if let error = error{
+                print("Motivate error: \(error.localizedDescription)")
+            }
+        }
+        
+        containerM.viewContext.automaticallyMergesChangesFromParent = true
+        containerM.viewContext.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
+        
         container.loadPersistentStores{ description, error in
             if let error = error {
                 print("data error: \(error.localizedDescription)")

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C1C43E5294E992A00A5EA0C /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1C43E4294E992A00A5EA0C /* PromptView.swift */; };
 		3C42CC3B293EE70A00EB94DE /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3C42CC3A293EE70A00EB94DE /* RevenueCat */; };
 		3C42CC40293EE89000EB94DE /* subscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C42CC3F293EE89000EB94DE /* subscribeView.swift */; };
 		3C4A1414290E321E0043B395 /* ReflectimeV9App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */; };
@@ -21,7 +22,6 @@
 		3C83697E293C42630076FBBE /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C83697D293C42630076FBBE /* EditView.swift */; };
 		3CAF6FA02936FB7B005BF6AA /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CAF6F9F2936FB7B005BF6AA /* MapView.swift */; };
 		3CC306512932FBB900E9C40E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CC306502932FBB900E9C40E /* Launch Screen.storyboard */; };
-		3CC306552933038200E9C40E /* Motivations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC306542933038200E9C40E /* Motivations.swift */; };
 		3CC3065929330B5A00E9C40E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3065829330B5A00E9C40E /* SettingsView.swift */; };
 		3CC3065D29330CA200E9C40E /* LocationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3065C29330CA200E9C40E /* LocationHandler.swift */; };
 		3CE27F9B2943052100889F6B /* TabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE27F9A2943052100889F6B /* TabsView.swift */; };
@@ -30,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C1C43E4294E992A00A5EA0C /* PromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		3C3CB90E293D9B0400683C5C /* ReflectimeV9.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReflectimeV9.entitlements; sourceTree = "<group>"; };
 		3C42CC3D293EE72100EB94DE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		3C42CC3F293EE89000EB94DE /* subscribeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = subscribeView.swift; sourceTree = "<group>"; };
@@ -46,7 +47,6 @@
 		3CAF6F9F2936FB7B005BF6AA /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		3CAF6FA129370E1C005BF6AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3CC306502932FBB900E9C40E /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		3CC306542933038200E9C40E /* Motivations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Motivations.swift; sourceTree = "<group>"; };
 		3CC3065829330B5A00E9C40E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3CC3065C29330CA200E9C40E /* LocationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHandler.swift; sourceTree = "<group>"; };
 		3CE27F9A2943052100889F6B /* TabsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabsView.swift; sourceTree = "<group>"; };
@@ -103,11 +103,11 @@
 				3C83697D293C42630076FBBE /* EditView.swift */,
 				3CFD696E293453CA009E04F9 /* IntroView.swift */,
 				3CE27F9C2943055300889F6B /* CalendarView.swift */,
-				3CC306542933038200E9C40E /* Motivations.swift */,
 				3C4A1429290E3A5F0043B395 /* NoteAdd.swift */,
 				3C836979293BC3D70076FBBE /* dataController.swift */,
 				3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */,
 				3C4A1415290E321E0043B395 /* ContentView.swift */,
+				3C1C43E4294E992A00A5EA0C /* PromptView.swift */,
 				3CC3065829330B5A00E9C40E /* SettingsView.swift */,
 				3C6371622933394B0082AB55 /* NotificationHandler.swift */,
 				3CE27F9A2943052100889F6B /* TabsView.swift */,
@@ -207,11 +207,11 @@
 				3C4A1416290E321E0043B395 /* ContentView.swift in Sources */,
 				3CAF6FA02936FB7B005BF6AA /* MapView.swift in Sources */,
 				3C42CC40293EE89000EB94DE /* subscribeView.swift in Sources */,
-				3CC306552933038200E9C40E /* Motivations.swift in Sources */,
 				3C6371632933394B0082AB55 /* NotificationHandler.swift in Sources */,
 				3CE27F9D2943055300889F6B /* CalendarView.swift in Sources */,
 				3CC3065929330B5A00E9C40E /* SettingsView.swift in Sources */,
 				3C4A1414290E321E0043B395 /* ReflectimeV9App.swift in Sources */,
+				3C1C43E5294E992A00A5EA0C /* PromptView.swift in Sources */,
 				3C83697E293C42630076FBBE /* EditView.swift in Sources */,
 				3CE27F9B2943052100889F6B /* TabsView.swift in Sources */,
 				3CC3065D29330CA200E9C40E /* LocationHandler.swift in Sources */,

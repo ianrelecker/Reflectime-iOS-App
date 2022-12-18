@@ -13,6 +13,13 @@ import RevenueCat
 struct NoteAdd: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var reflections: FetchedResults<Reflection>
+    
+    @FetchRequest(sortDescriptors: []) var motivations: FetchedResults<Motivations>
+    
+    
+
+    
+    
     let defaults = UserDefaults.standard
     @Environment(\.dismiss) var dismiss
     private let locationAddH = locationHandler()
@@ -29,12 +36,12 @@ struct NoteAdd: View {
     @State private var lat = 0.0
     @State private var lon = 0.0
     
-    @State private var idea = motivations()
+    //@State private var idea = gimmePrompt() ?? "Click Shuffle to get a new prompt"
     @State private var showLoc = locationHandler.share.user
     @State private var colortext = Color(UIColor.systemGray4)
     @State private var secondColor = Color("Background")
     
-    
+    @State private var idea = ""
     
     var body: some View{
         
@@ -42,7 +49,8 @@ struct NoteAdd: View {
 
                 ZStack{
                     Form{
-                        if(defaults.bool(forKey: "showP")){
+                        //change to show edit warning
+                        //if(defaults.bool(forKey: "showP")){
                             Section{
                                 VStack{
                                     HStack{
@@ -66,17 +74,17 @@ struct NoteAdd: View {
                                                 .foregroundColor(Color(UIColor.lightGray))
                                                 .cornerRadius(10)
                                                 .onTapGesture {
-                                                    idea = motivations()
+                                                    idea = gimmePrompt()
                                                 }
                                             Image(systemName: "shuffle")
                                                 .onTapGesture {
-                                                    idea = motivations()
+                                                    idea = gimmePrompt()
                                                 }
                                         }.frame(width: 40, height: 40, alignment: .trailing)
                                     }
                                 }
                             }
-                        }
+                        
                         Section{
                             VStack{
                                 HStack{
@@ -170,11 +178,22 @@ struct NoteAdd: View {
                 .foregroundColor(saveCol())
             }//end tool
             
+        }
+        .onAppear{
+                idea = gimmePrompt()
         }//end nav
+        
         
     }//end some view
     
-
+    func gimmePrompt() -> String {
+        var motivation = [String]()
+        for mot in motivations{
+            motivation.append(mot.item ?? "Fail append")
+        }
+        motivation.shuffle()
+        return motivation[0]
+    }
     
     func saveCol() -> Color{
         if(savedis()){

@@ -82,7 +82,11 @@ struct SettingsView: View {
                         defaults.set(showP, forKey: "showP")
                     }
                 }
-                Section("Show Prompts"){
+                Section("Prompts"){
+                    NavigationLink("Edit Your Prompts"){
+                        PromptView()
+                    }
+                
                     Toggle(isOn: $showP){
                         Text("Show Prompts When Creating A New Reflection")
                     }.onSubmit {
