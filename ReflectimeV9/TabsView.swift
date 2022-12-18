@@ -15,8 +15,8 @@ struct TabsView: View {
                     
                     ContentView()
                         .tabItem({
-                            Image(systemName: "list.dash")
-                            Text("List")
+                            Image(systemName: "house")
+                            Text("Home")
                         })
                     CalendarView()
                         .tabItem({

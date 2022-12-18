@@ -6,130 +6,7 @@
 
 
 import SwiftUI
-
-/*
-struct NoteDetailC: View {
-    let reflection: Reflection
-
-    @ObservedObject var locationhandler = locationHandler.share
-    
-    
-    @State private var showedit = false
-    @State private var showMap = locationHandler.share.user
-    @AppStorage("showW") var showW = false
-    
-    @AppStorage("sub") var sub = false
-    
-    var body: some View{
-        //NavigationView{
-                Form{
-                    Section{
-                        VStack{
-                            HStack{
-                                Text("Title of your Reflection:")
-                                    .foregroundColor(Color("Background"))
-                                    .fontWeight(.light)
-                                    .opacity(5)
-                                Spacer()
-                            }
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundColor(Color("Background"))
-                            HStack{
-                                Text(reflection.name ?? "Fail")
-                                    .foregroundColor(Color("Background"))
-                                    .font(.title)
-                                Spacer()
-                            }
-                        }
-                    }
-                    
-                    Section{
-                        VStack{
-                            HStack{
-                                Text("Your Thought:")
-                                    .opacity(5)
-                                    .foregroundColor(Color("Background"))
-                                    .fontWeight(.light)
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                Spacer()
-                            }
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundColor(Color("Background"))
-                            HStack{
-                                Text(reflection.note ?? "Fail")
-                                    .foregroundColor(Color("Background"))
-                                    .font(.title2)
-                                    .fontWeight(.light)
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
-                                    //.border(Color(UIColor.systemGray4), width: 4)
-                                    .cornerRadius(5)
-                                
-                                Spacer()
-                            }
-                        }
-                    }
-                    Text("Created: " + "\(reflection.date?.formatted(date: .complete, time: .shortened) ?? Date().formatted())")
-                                            .foregroundColor(Color("Background"))
-                                            .font(.caption)
-                    VStack{
-                             if (reflection.lon != 0){
-                             Text("You were here when this reflection was created:").foregroundColor(Color("Background"))
-                             .frame(maxWidth: .infinity, alignment: .leading)
-                             .font(.caption)
-                                 ZStack{
-                                     MapView(place: IdentifiablePlace(id: UUID(), lat: reflection.lat, lon: reflection.lon))
-                                         .disabled(true)
-                                     Image(systemName: "location.circle.fill")
-                                         .resizable()
-                                         .scaledToFit()
-                                         .foregroundColor(.blue)
-                                         .frame(width: 40, height: 40)
-                                         .disabled(true)
-                                 }
-                             
-                             }else{
-                             Text("Location Not Included In This Reflection")
-                             .foregroundColor(Color("Background"))
-                             .font(.caption)
-                             
-                             }
-                             
-                    }//v
-                    
-                    
-                }//f
-                
-                
-        //}//nav
-        .sheet(isPresented: $showedit){
-            EditView(reflection: reflection).presentationDetents([PresentationDetent .fraction(0.7)])
-        }
-        .toolbar{
-            
-                ZStack{
-                    
-                    Rectangle()
-                        .cornerRadius(10)
-                        .foregroundColor(Color(UIColor.systemGray5))
-                        .frame(width: 60, height: 30)
-                        .ignoresSafeArea()
-                    Button{
-                        showedit = true
-                    }label: {
-                        Text("Edit")
-                            .fontWeight(.light)
-                            .foregroundColor(Color(UIColor.systemBlue))
-                    }
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8))
-                }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 30))
-                
-            
-        }
-    }//body
-}//view
-*/
+import RevenueCat
 
 struct CalendarView: View {
     @FetchRequest(sortDescriptors: []) var reflection: FetchedResults<Reflection>
@@ -218,6 +95,25 @@ struct CalendarView: View {
                         
                         
                         Section("Results:"){
+                            
+                            if(something == 0 && !dateSort && !catasort && !reviewMonth){
+                                HStack{
+                                    Spacer()
+                                    ZStack{
+                                        Rectangle()
+                                            .frame(width: 250, height: 60, alignment: .center)
+                                            .foregroundColor(Color("BackColor"))
+                                            .cornerRadius(15)
+                                            .shadow(radius: 3)
+                                        Text("Sort Through Your Reflections!\nTry Using An Option Above.")
+                                            .fixedSize()
+                                            .fontWeight(.light)
+                                            .multilineTextAlignment(.center)
+                                            .dynamicTypeSize(.medium)
+                                    }
+                                    Spacer()
+                                }
+                            }
                             
                             //reflect month
                             if(reviewMonth){
@@ -537,33 +433,17 @@ struct CalendarView: View {
                     
                     
                     //V
-                    /*
-                    Rectangle()
-                        .frame(width: 1, height: 0)
-                        .foregroundColor(Color("BackColor"))
-                        .ignoresSafeArea()
-                     */
                     
-                    
-                    if(something == 0 && !dateSort && !catasort && !reviewMonth){
-                        HStack{
-                            Spacer()
-                            ZStack{
-                                Rectangle()
-                                    .frame(width: 250, height: 60, alignment: .center)
-                                    .foregroundColor(Color("BackColor"))
-                                    .cornerRadius(15)
-                                    .shadow(radius: 3)
-                                Text("Sort Through Your Reflections!\nTry Using An Option Above.")
-                                    .fixedSize()
-                                    .fontWeight(.light)
-                                    .multilineTextAlignment(.center)
-                                    .dynamicTypeSize(.medium)
-                            }
-                            Spacer()
+                    Spacer()
+                }
+                .onAppear{
+                    Purchases.shared.restorePurchases { (customerInfo, error) in
+                        if customerInfo?.entitlements.all["Pro"]?.isActive == true {
+                            defaults.set(true, forKey: "pro")
+                        }else{
+                            defaults.set(false, forKey: "pro")
                         }
                     }
-                    Spacer()
                 }
                 
             }
@@ -571,6 +451,7 @@ struct CalendarView: View {
                 subscribeView().presentationDetents([PresentationDetent .large]).interactiveDismissDisabled(true)
             }
             .onAppear{
+                
                 print(defaults.bool(forKey: "pro"))
             }
             

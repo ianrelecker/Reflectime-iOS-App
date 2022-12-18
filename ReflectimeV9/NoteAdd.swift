@@ -138,7 +138,7 @@ struct NoteAdd: View {
                                         Text("Do you want to include your location?").fontWeight(.light)
                                     }
                                 }else{
-                                    Text("Enable location permissions under the \"Gear\" icon to add your location to a Reflection")
+                                    Text("Enable location permissions at the bottom of the \"Settings\" tab to add your location to a Reflection")
                                         .fontWeight(.light)
                                         .foregroundColor(Color(UIColor.darkGray))
                                         .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0))
