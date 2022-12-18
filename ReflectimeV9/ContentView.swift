@@ -144,7 +144,7 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var reflections: FetchedResults<Reflection>
     
-    
+    @State private var holdingdisText = ""
     
     @ObservedObject var locationhandler = locationHandler.share
     
@@ -203,10 +203,18 @@ struct ContentView: View {
                                                     .ignoresSafeArea()
                                                 HStack{
                                                     
-                                                    let txt = (reflect.note ?? "Fail note").prefix(30)
+                                                    let txt = (reflect.note ?? "Fail note")
+                                                        .prefix(30)
+                                                        
+                                                    TextField(txt, text: $holdingdisText)
+                                                        .fontWeight(.light)
+                                                        .disabled(true)
+                                                        .allowsHitTesting(false)
+                                                    /*
                                                     Text("\(String(txt))...")
                                                         .fontWeight(.ultraLight)
                                                         .dynamicTypeSize(.small)
+                                                     */
                                                     Spacer()
                                                 }
                                             }
