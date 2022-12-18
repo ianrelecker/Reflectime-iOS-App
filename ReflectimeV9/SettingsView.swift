@@ -53,14 +53,48 @@ struct SettingsView: View {
 */
                 Section("Daily Notifications"){
                     DatePicker("Select A Time To Be Reminded To Reflect",selection: $notificationH, displayedComponents: .hourAndMinute)
+                        .onChange(of: notificationH){ state in
+                            NotificationClass().schedule(dateInput: notificationH)
+                            let defaults = UserDefaults.standard
+                            notificationH = defaults.object(forKey: "Date") as! Date
+                            defaults.set(notificationToggle, forKey: "toggleNotify")
+                            //defaults.set(showdate, forKey: "showdate")
+                            print(Calendar.current.dateComponents([.minute], from: notificationH))
+                            print(Calendar.current.dateComponents([.hour], from: notificationH))
+                            defaults.set(sendNot, forKey: "sendNot")
+                            defaults.set(showP, forKey: "showP")
+                            print(state)
+                        }
+                        
                     
                     Toggle(isOn: $sendNot){
                         Text("Send Daily Notifications")
+                    }
+                    .onSubmit {
+                        NotificationClass().schedule(dateInput: notificationH)
+                        let defaults = UserDefaults.standard
+                        notificationH = defaults.object(forKey: "Date") as! Date
+                        defaults.set(notificationToggle, forKey: "toggleNotify")
+                        //defaults.set(showdate, forKey: "showdate")
+                        print(Calendar.current.dateComponents([.minute], from: notificationH))
+                        print(Calendar.current.dateComponents([.hour], from: notificationH))
+                        defaults.set(sendNot, forKey: "sendNot")
+                        defaults.set(showP, forKey: "showP")
                     }
                 }
                 Section("Show Prompts"){
                     Toggle(isOn: $showP){
                         Text("Show Prompts When Creating A New Reflection")
+                    }.onSubmit {
+                        NotificationClass().schedule(dateInput: notificationH)
+                        let defaults = UserDefaults.standard
+                        notificationH = defaults.object(forKey: "Date") as! Date
+                        defaults.set(notificationToggle, forKey: "toggleNotify")
+                        //defaults.set(showdate, forKey: "showdate")
+                        print(Calendar.current.dateComponents([.minute], from: notificationH))
+                        print(Calendar.current.dateComponents([.hour], from: notificationH))
+                        defaults.set(sendNot, forKey: "sendNot")
+                        defaults.set(showP, forKey: "showP")
                     }
                 }
             
