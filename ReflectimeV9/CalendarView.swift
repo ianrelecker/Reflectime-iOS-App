@@ -168,9 +168,7 @@ struct CalendarView: View {
                                                     
                                                     Spacer()
                                                 }
-                                                Rectangle()
-                                                    .frame(height: 1)
-                                                    .foregroundColor(Color("Background"))
+                                                
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
@@ -246,9 +244,7 @@ struct CalendarView: View {
                                                     //.border(Color("Background"), width: 1)
                                                     Spacer()
                                                 }
-                                                Rectangle()
-                                                    .frame(height: 1)
-                                                    .foregroundColor(Color("Background"))
+                                                
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
@@ -325,9 +321,7 @@ struct CalendarView: View {
                                                     //.border(Color("Background"), width: 1)
                                                     Spacer()
                                                 }
-                                                Rectangle()
-                                                    .frame(height: 1)
-                                                    .foregroundColor(Color("Background"))
+                                                
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
@@ -403,9 +397,7 @@ struct CalendarView: View {
                                                     //.border(Color("Background"), width: 1)
                                                     Spacer()
                                                 }
-                                                Rectangle()
-                                                    .frame(height: 1)
-                                                    .foregroundColor(Color("Background"))
+                                                
                                             }
                                             if(reflect.lon != 0){
                                                 ZStack{
