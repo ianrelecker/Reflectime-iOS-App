@@ -91,13 +91,15 @@ struct NoteDetail: View {
                                  */
                                  ZStack{
                                      MapView(place: IdentifiablePlace(id: UUID(), lat: reflection.lat, lon: reflection.lon))
-                                         .disabled(true)
+                                         
+                                     /*
                                      Image(systemName: "location.circle.fill")
                                          .resizable()
                                          .scaledToFit()
                                          .foregroundColor(.blue)
                                          .frame(width: 40, height: 40)
                                          .disabled(true)
+                                      */
                                  }
                              
                              }else{

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import RevenueCat
-
 @main
 struct ReflectimeV9App: App {
     @StateObject private var dataController = DataController()

@@ -29,7 +29,7 @@ struct CalendarView: View {
     var body: some View {
         NavigationView{
             if(defaults.bool(forKey: "pro") == true || defaults.integer(forKey: "views") < 500){
-                //put in map view here
+                
                 Form{
                     Section{
                         if(defaults.bool(forKey: "pro") == false){
