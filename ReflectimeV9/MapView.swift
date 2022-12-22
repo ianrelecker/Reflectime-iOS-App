@@ -27,13 +27,13 @@ struct MapView: View {
     var body: some View {
             Map(coordinateRegion: .constant(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: place.location.latitude, longitude: place.location.longitude), span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12))), annotationItems: [place]) {place in
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: place.location.latitude, longitude: place.location.longitude)){
-                    /*
+                    
                     Image(systemName: "location.circle.fill")
                         .resizable()
                         .scaledToFit()
                         .foregroundColor(.blue)
                         .frame(width: 40, height: 40)
-                     */
+                     
                 }
             }
             .onTapGesture {
