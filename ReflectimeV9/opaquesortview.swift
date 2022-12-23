@@ -15,6 +15,7 @@ struct opaquesortview: View {
     
     @State private var showadd = false
     
+    
     var body: some View {
         ZStack{
             Image("opaqsort")

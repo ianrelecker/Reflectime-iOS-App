@@ -35,7 +35,10 @@ struct MapViewAll: View {
     @State var userloc = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 50, longitude: 50), span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12))
     
     var body: some View {
+        
+        
         VStack{
+            if(arr.count >= 3){
             HStack{
                 Spacer()
                 Text("Click through your reflections!")
@@ -64,47 +67,45 @@ struct MapViewAll: View {
                     .frame(width: 35, height: 1)
                     .opacity(0)
             }
-            Map(coordinateRegion: $userloc, annotationItems: arr){ anno in
-                MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: anno.lat, longitude: anno.lon)){
-                    VStack{
-                        Image(systemName: "mappin")
-                            .renderingMode(.original)
-                            .imageScale(.large)
-                        /*
-                         .onTapGesture {
-                         if(showname == 0.0){
-                         showname = 100.0
-                         }else if(showname == 100.0){
-                         showname = 0.0
-                         }
-                         print("yeah")
-                         }
-                         */
-                        
-                        
-                            /*
-                        TextField(textfoc, text: $fake)
-                            .fontWeight(.medium)
-                            .disabled(true)
-                            .allowsHitTesting(false)
+                Map(coordinateRegion: $userloc, annotationItems: arr){ anno in
+                    MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: anno.lat, longitude: anno.lon)){
+                        VStack{
+                            Image(systemName: "mappin")
+                                .renderingMode(.original)
+                                .imageScale(.large)
                             
-                            .frame(width: 100)
-                        */
-                        ZStack{
-                            Rectangle()
-                                .foregroundColor(Color("WB"))
-                                .frame(width: .leastNormalMagnitude, height: 20, alignment: .center)
-                            Text(textfoc)
-                                .dynamicTypeSize(.medium)
-                                .disabled(true)
-                                .allowsHitTesting(false)
-                                .frame(width: 100, height: 20, alignment: .center)
+                            ZStack{
+                               
+                                if(anno.foc == true){
+                                    Text(anno.title)
+                                        .fontWeight(.medium)
+                                        .disabled(true)
+                                        .allowsHitTesting(false)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(Color(.black))
+                                        .padding(EdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3))
+                                        .background(Color(UIColor.systemGray3))
+                                        .cornerRadius(10)
+                                }
+                                
+                                    
+                               /*
+                                    Text(textfoc)
+                                        .foregroundColor(Color("WB"))
+                                        .dynamicTypeSize(.medium)
+                                        .disabled(true)
+                                        .allowsHitTesting(false)
+                                        .frame(height: 20, alignment: .center)
+                                */
+                            }//.background(Color("BW"))
+                            
+                            
+                            
                         }
-                            
-                        
-                        
                     }
                 }
+            }else{
+                NotEnoughMapView()
             }
             //.ignoresSafeArea(edges: .top)
         }
@@ -113,12 +114,15 @@ struct MapViewAll: View {
             getallLoc()
             getnextloc()
         }
+        .onDisappear{
+            arr = [Location]()
+        }
         
     }
     
     func getnextloc(){
         
-        if(indfoc == reflection.count){
+        if(indfoc == arr.count){
             indfoc = 0
         }
         print("\(indfoc) indfoc")
@@ -132,17 +136,26 @@ struct MapViewAll: View {
         }
          */
         let hold = arr[indfoc]
+        if(indfoc != 0){
+            arr[indfoc-1].foc = false
+        }else{
+            arr[arr.count-1].foc = false
+        }
         userloc = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: hold.lat, longitude: hold.lon), span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12))
-        textfoc = arr[indfoc].title
+        arr[indfoc].foc = true
         indfoc = indfoc + 1
+        
+        
+        
     }
     
     
     func getallLoc(){
         for ref in reflection{
             let hold = Location(id: UUID(), title: ref.name ?? "Fail name", data: ref.note ?? "Fail note", lat: ref.lat, lon: ref.lon, foc: false)
-            arr.append(hold)
-            
+            if(ref.lat != 0.0){
+                arr.append(hold)
+            }
         }
     }
     

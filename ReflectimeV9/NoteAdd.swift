@@ -31,7 +31,7 @@ struct NoteAdd: View {
     @State private var includeLocation = true
     
     @State private var cat = "General"
-    var cats = ["General", "Personal", "Work", "Feelings", "Wishes", "Intrests"]
+    var cats = ["General", "Personal", "Work", "Feelings", "Wishes", "Intrests", "Love", "Activity"]
     
     @State private var lat = 0.0
     @State private var lon = 0.0

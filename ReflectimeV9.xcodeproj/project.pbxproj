@@ -24,6 +24,7 @@
 		3CC306512932FBB900E9C40E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CC306502932FBB900E9C40E /* Launch Screen.storyboard */; };
 		3CC3065929330B5A00E9C40E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3065829330B5A00E9C40E /* SettingsView.swift */; };
 		3CC3065D29330CA200E9C40E /* LocationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3065C29330CA200E9C40E /* LocationHandler.swift */; };
+		3CCDC7D829556F0D00547A5D /* NotEnoughMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCDC7D729556F0D00547A5D /* NotEnoughMapView.swift */; };
 		3CD6ABDB2951599000E748C1 /* MapViewAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD6ABDA2951599000E748C1 /* MapViewAll.swift */; };
 		3CD6ABDD2954088C00E748C1 /* opaquesortview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD6ABDC2954088C00E748C1 /* opaquesortview.swift */; };
 		3CE27F9B2943052100889F6B /* TabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE27F9A2943052100889F6B /* TabsView.swift */; };
@@ -51,6 +52,7 @@
 		3CC306502932FBB900E9C40E /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		3CC3065829330B5A00E9C40E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3CC3065C29330CA200E9C40E /* LocationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHandler.swift; sourceTree = "<group>"; };
+		3CCDC7D729556F0D00547A5D /* NotEnoughMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotEnoughMapView.swift; sourceTree = "<group>"; };
 		3CD6ABDA2951599000E748C1 /* MapViewAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewAll.swift; sourceTree = "<group>"; };
 		3CD6ABDC2954088C00E748C1 /* opaquesortview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opaquesortview.swift; sourceTree = "<group>"; };
 		3CE27F9A2943052100889F6B /* TabsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabsView.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 			children = (
 				3CD6ABDA2951599000E748C1 /* MapViewAll.swift */,
 				3CD6ABDC2954088C00E748C1 /* opaquesortview.swift */,
+				3CCDC7D729556F0D00547A5D /* NotEnoughMapView.swift */,
 				3CAF6F9F2936FB7B005BF6AA /* MapView.swift */,
 				3C3CB90E293D9B0400683C5C /* ReflectimeV9.entitlements */,
 				3CAF6FA129370E1C005BF6AA /* Info.plist */,
@@ -217,6 +220,7 @@
 				3CE27F9D2943055300889F6B /* CalendarView.swift in Sources */,
 				3CC3065929330B5A00E9C40E /* SettingsView.swift in Sources */,
 				3C4A1414290E321E0043B395 /* ReflectimeV9App.swift in Sources */,
+				3CCDC7D829556F0D00547A5D /* NotEnoughMapView.swift in Sources */,
 				3C1C43E5294E992A00A5EA0C /* PromptView.swift in Sources */,
 				3CD6ABDD2954088C00E748C1 /* opaquesortview.swift in Sources */,
 				3C83697E293C42630076FBBE /* EditView.swift in Sources */,
