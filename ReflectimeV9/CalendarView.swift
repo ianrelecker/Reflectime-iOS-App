@@ -444,7 +444,7 @@ struct CalendarView: View {
             else{
                 opaquesortview()
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
     //func sortView() -> some View{}
 }

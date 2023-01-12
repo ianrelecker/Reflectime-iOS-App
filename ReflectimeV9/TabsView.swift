@@ -23,12 +23,13 @@ struct TabsView: View {
                             Image(systemName: "brain.head.profile")
                             Text("Reflect")
                         })
-                    
+                    /*
                     MapViewAll()
                         .tabItem({
                             Image(systemName: "map")
                             Text("Map")
                         })
+                     */
                     SettingsView()
                         .tabItem({
                             Image(systemName: "gear")

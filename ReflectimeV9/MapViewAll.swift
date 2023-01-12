@@ -125,8 +125,7 @@ struct MapViewAll: View {
         if(indfoc == arr.count){
             indfoc = 0
         }
-        print("\(indfoc) indfoc")
-        print("\(arr[indfoc].title) arr")
+        
         /*
         if(indfoc == 0){
             arr[indfoc].foc = true
@@ -141,7 +140,11 @@ struct MapViewAll: View {
         }else{
             arr[arr.count-1].foc = false
         }
+        print(userloc)
+        print("\(indfoc) indfoc")
+        print("\(arr[indfoc].title) arr")
         userloc = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: hold.lat, longitude: hold.lon), span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12))
+        print("After \(userloc)")
         arr[indfoc].foc = true
         indfoc = indfoc + 1
         
