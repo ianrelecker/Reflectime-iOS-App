@@ -251,7 +251,8 @@ struct ContentView: View {
                     }
                     EditButton().disabled(editdis())
                     Button{
-                        print("\(getPro())" + "GetPro")
+                        //this was the cause of the first issue
+                        //print("\(getPro())" + "GetPro")
                         
                         showAdd = true
                         /*
