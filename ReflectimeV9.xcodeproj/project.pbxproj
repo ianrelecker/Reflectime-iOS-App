@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3C1C43E5294E992A00A5EA0C /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1C43E4294E992A00A5EA0C /* PromptView.swift */; };
 		3C42CC3B293EE70A00EB94DE /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3C42CC3A293EE70A00EB94DE /* RevenueCat */; };
-		3C42CC40293EE89000EB94DE /* subscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C42CC3F293EE89000EB94DE /* subscribeView.swift */; };
 		3C4A1414290E321E0043B395 /* ReflectimeV9App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */; };
 		3C4A1416290E321E0043B395 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1415290E321E0043B395 /* ContentView.swift */; };
 		3C4A1418290E321F0043B395 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A1417290E321F0043B395 /* Assets.xcassets */; };
@@ -36,7 +35,6 @@
 		3C1C43E4294E992A00A5EA0C /* PromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		3C3CB90E293D9B0400683C5C /* ReflectimeV9.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReflectimeV9.entitlements; sourceTree = "<group>"; };
 		3C42CC3D293EE72100EB94DE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		3C42CC3F293EE89000EB94DE /* subscribeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = subscribeView.swift; sourceTree = "<group>"; };
 		3C4A1410290E321E0043B395 /* ReflectimeV9.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReflectimeV9.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectimeV9App.swift; sourceTree = "<group>"; };
 		3C4A1415290E321E0043B395 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 				3CAF6F9F2936FB7B005BF6AA /* MapView.swift */,
 				3C3CB90E293D9B0400683C5C /* ReflectimeV9.entitlements */,
 				3CAF6FA129370E1C005BF6AA /* Info.plist */,
-				3C42CC3F293EE89000EB94DE /* subscribeView.swift */,
 				3C83697D293C42630076FBBE /* EditView.swift */,
 				3CFD696E293453CA009E04F9 /* IntroView.swift */,
 				3CE27F9C2943055300889F6B /* CalendarView.swift */,
@@ -215,7 +212,6 @@
 			files = (
 				3C4A1416290E321E0043B395 /* ContentView.swift in Sources */,
 				3CAF6FA02936FB7B005BF6AA /* MapView.swift in Sources */,
-				3C42CC40293EE89000EB94DE /* subscribeView.swift in Sources */,
 				3C6371632933394B0082AB55 /* NotificationHandler.swift in Sources */,
 				3CE27F9D2943055300889F6B /* CalendarView.swift in Sources */,
 				3CC3065929330B5A00E9C40E /* SettingsView.swift in Sources */,
@@ -376,7 +372,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7.1;
+				MARKETING_VERSION = 2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = Capstone.ReflectimeV9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -413,7 +409,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7.1;
+				MARKETING_VERSION = 2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = Capstone.ReflectimeV9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

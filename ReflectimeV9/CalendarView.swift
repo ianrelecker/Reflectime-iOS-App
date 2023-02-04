@@ -18,10 +18,9 @@ struct CalendarView: View {
     
     @State private var catasort = false
     @State private var cat = "General"
-    var cats = ["General", "Personal", "Work", "Feelings", "Wishes", "Intrests"]
+    var cats = ["General", "Personal", "Work", "Feelings", "Wishes", "Intrests", "Love", "Activity"]
     
-    @State private var reviewMonth = false
-    @State private var setsubC = false
+    @State private var reviewMonth = true
     
     let defaults = UserDefaults.standard
     
@@ -29,76 +28,60 @@ struct CalendarView: View {
     var body: some View {
         NavigationView{
             if(reflection.count >= 3){
-                if(defaults.bool(forKey: "pro") == true || defaults.integer(forKey: "views") < 500){
                     
                     Form{
-                        Section{
-                            if(defaults.bool(forKey: "pro") == false){
-                                
-                                HStack{
-                                    Spacer()
-                                    ZStack{
-                                        Rectangle()
-                                            .frame(width: 340, height: 30, alignment: .center)
-                                            .foregroundColor(Color("BackColor"))
-                                            .cornerRadius(10)
-                                            .shadow(radius: 3)
-                                            .onTapGesture{
-                                                setsubC = true
-                                                defaults.set(false, forKey: "warn")
-                                            }
-                                        Text("You have \(500 - defaults.integer(forKey: "views")) free results of sort remaining.")
-                                            .fixedSize()
-                                            .fontWeight(.light)
-                                            .multilineTextAlignment(.center)
-                                            .dynamicTypeSize(.medium)
-                                            .allowsHitTesting(false)
-                                    }
-                                    Spacer()
-                                }
-                            }
-                        }
+                        /*
                         Section("Reflect"){
+                            
                             Toggle(isOn: $reviewMonth){
-                                Text("Reflect On Your Past Month")
+                                Text("Show All Reflections")
                             }
                         }
-                        Section("Sort"){
+                         */
+                        Section("Sort"){/*
                             Toggle(isOn: $dateSort){
                                 Text("Sort By Day")
                             }
                             if(dateSort){
+                                ResetView()
                                 DatePicker("Pick A Date To Reflect On:",selection: $dates, displayedComponents: .date)
                                 
                                     .datePickerStyle(.compact)
                                     .fontWeight(.light)
                             }
+                                         */
                             Toggle(isOn: $catasort){
                                 Text("Sort By Catagory")
                             }
+                                         
                             if(catasort){
                                 Picker(selection: $cat, label: Text("Choose a Catagory").fontWeight(.light)) {
                                     ForEach(cats, id: \.self){
                                         Text($0)
                                     }
+                                }.onAppear{
+                                    reviewMonth.toggle()
+                                }
+                                .onDisappear{
+                                    reviewMonth.toggle()
                                 }
                             }
-                            if(catasort == true || dateSort == true || reviewMonth == true){
+                            /*
+                            if(catasort == true){
                                 Button("Reset Sort"){
-                                    reviewMonth = false
+                                    reviewMonth = true
                                     catasort = false
-                                    dateSort = false
                                     dates = Date()
                                     cat = "General"
                                 }.foregroundColor(Color(UIColor.systemBlue))
                             }
-                            
+                            */
                         }
                         
                         
                         Section("Results:"){
                             
-                            if(something == 0 && !dateSort && !catasort && !reviewMonth){
+                            if(something == 0){
                                 HStack{
                                     Spacer()
                                     ZStack{
@@ -107,7 +90,7 @@ struct CalendarView: View {
                                             .foregroundColor(Color("BackColor"))
                                             .cornerRadius(15)
                                             .shadow(radius: 3)
-                                        Text("Sort Through Your Reflections!\nTry Using An Option Above.")
+                                        Text("No Results. Try another option.")
                                             .fixedSize()
                                             .fontWeight(.light)
                                             .multilineTextAlignment(.center)
@@ -120,7 +103,6 @@ struct CalendarView: View {
                             //reflect month
                             if(reviewMonth){
                                 ForEach(reflection){reflect in
-                                    if(Calendar.current.dateComponents([.year, .month], from: Date()) == Calendar.current.dateComponents([.year, .month], from: reflect.date ?? Date())){
                                         
                                         VStack{
                                             
@@ -175,24 +157,27 @@ struct CalendarView: View {
                                             if(reflect.lon != 0){
                                                 ZStack{
                                                     MapView(place: IdentifiablePlace(id: UUID(), lat: reflect.lat, lon: reflect.lon))
+                                                    
                                                         .disabled(true)
+                                                    /*
                                                     Image(systemName: "location.circle.fill")
                                                         .resizable()
                                                         .scaledToFit()
                                                         .foregroundColor(.blue)
                                                         .frame(width: 40, height: 40)
                                                         .disabled(true)
+                                                     */
                                                 }
                                             }
                                         }.onAppear{
                                             let value = defaults.integer(forKey: "views")
                                             defaults.set(value + 1, forKey: "views")
                                         }
-                                    }
+                                    
                                     
                                 }
                             }
-                            
+                            /*
                             //date
                             if(dateSort && !catasort){
                                 ForEach(reflection){ reflect in
@@ -272,6 +257,7 @@ struct CalendarView: View {
                                     }//if
                                 }//for
                             }
+                            */
                             //cata
                             if(catasort && !dateSort){
                                 ForEach(reflection){ reflect in
@@ -349,6 +335,7 @@ struct CalendarView: View {
                                     }
                                 }
                             }
+                            /*
                             if(catasort && dateSort){
                                 ForEach(reflection) { reflect in
                                     if(Calendar.current.dateComponents([.year, .month, .day], from: reflect.date ?? Date()) == Calendar.current.dateComponents([.year, .month, .day], from: dates) && cat == reflect.cata ?? "General"){
@@ -420,33 +407,16 @@ struct CalendarView: View {
                                     }
                                 }
                             }
-                            
+                            */
                         }//form
                         
                     }
-                    
-                    //.navigationBarTitle("Reflect")
-                    
-                    .sheet(isPresented: $setsubC){
-                        subscribeView().presentationDetents([PresentationDetent .large]).interactiveDismissDisabled(true)
-                    }
-                    
-                    .onAppear{
-                        
-                        print(defaults.bool(forKey: "pro"))
-                    }
-                    
-                }
-                else{
-                    subscribeView()
-                }
             }
             else{
                 opaquesortview()
             }
         }.navigationViewStyle(StackNavigationViewStyle())
     }
-    //func sortView() -> some View{}
 }
 
 

@@ -127,7 +127,6 @@ struct IntroView: View {
                         let defaults = UserDefaults.standard
                         notificationHI = defaults.object(forKey: "Date") as! Date
                         defaults.set(notificationToggleI, forKey: "toggleNotify")
-                        //defaults.set(showdate, forKey: "showdate")
                         print(Calendar.current.dateComponents([.minute], from: notificationHI))
                         print(Calendar.current.dateComponents([.hour], from: notificationHI))
                         dismiss()

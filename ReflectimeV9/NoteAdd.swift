@@ -36,7 +36,6 @@ struct NoteAdd: View {
     @State private var lat = 0.0
     @State private var lon = 0.0
     
-    //@State private var idea = gimmePrompt() ?? "Click Shuffle to get a new prompt"
     @State private var showLoc = locationHandler.share.user
     @State private var colortext = Color(UIColor.systemGray4)
     @State private var secondColor = Color("Background")
@@ -49,13 +48,11 @@ struct NoteAdd: View {
 
                 ZStack{
                     Form{
-                        //change to show edit warning
-                        //if(defaults.bool(forKey: "showP")){}
                             Section{
                                 VStack{
                                     HStack{
                                         Text("Prompt:")
-                                        //.padding(1)
+                                        
                                             .foregroundColor(Color("Background"))
                                             .fontWeight(.bold)
                                         Spacer()

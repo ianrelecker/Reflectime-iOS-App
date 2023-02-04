@@ -32,23 +32,23 @@ struct MapView: View {
                         .resizable()
                         .scaledToFit()
                         .foregroundColor(.blue)
-                        .frame(width: 40, height: 40)
+                        .frame(width: 20, height: 20)
                      
                 }
             }
             .onTapGesture {
                 //causes purple error
-                /*
+                
                 print("url")
                 let url = URL(string: "maps://?saddr=&daddr=\(place.location.latitude),\(place.location.longitude)")
                 if UIApplication.shared.canOpenURL(url!){
                     UIApplication.shared.open(url!, options: [:], completionHandler: nil)
                 }
-                 */
+                 
                 
             }
             .disabled(false)
-            .frame(height: 300)
+            .frame(height: 150)
             .cornerRadius(10)
             .onAppear{
                 UIApplication.shared.applicationIconBadgeNumber = 0

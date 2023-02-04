@@ -72,7 +72,6 @@ struct NoteDetail: View {
                                     .font(.title2)
                                     
                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
-                                    //.border(Color(UIColor.systemGray4), width: 4)
                                     .cornerRadius(5)
                                 
                                 Spacer()
@@ -168,7 +167,6 @@ struct ContentView: View {
             NavigationView{
                 List(){
                     ForEach(reflections){ reflect in
-                            //["General", "Personal", "Work", "Feelings", "Wishes", "Intrests"]
                             Section(reflect.cata ?? "Fail Sc"){
                                 NavigationLink{
                                     NoteDetail(reflection: reflect.self)
@@ -215,11 +213,7 @@ struct ContentView: View {
                                                         .disabled(true)
                                                         .allowsHitTesting(false)
                                                         .padding(EdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0))
-                                                    /*
-                                                    Text("\(String(txt))...")
-                                                        .fontWeight(.ultraLight)
-                                                        .dynamicTypeSize(.small)
-                                                     */
+                                                    
                                                     Spacer()
                                                 }
                                             }
@@ -236,7 +230,6 @@ struct ContentView: View {
                 }
                 .onAppear{
                     showcount = true
-                    //defaults.set(false, forKey: "dis")
                 }
                 //end list
                 .toolbar{
@@ -251,31 +244,11 @@ struct ContentView: View {
                     }
                     EditButton().disabled(editdis())
                     Button{
-                        //this was the cause of the first issue
-                        //print("\(getPro())" + "GetPro")
-                        
                         showAdd = true
-                        /*
-                        if(getPro() == true){
-                            
-                            showAdd = true
-                        }
-                        else if(getPro() == false && reflections.count > 6){
-                            showdia = true
-                        }
-                        else if(getPro() == false && reflections.count <= 6){
-                            showAdd = true
-                        }
-                        */
-                        
                     }label: {
                         Image(systemName: "plus")
                     }//end button
                 }//end toolbar
-                .sheet(isPresented: $showdia){
-                    subscribeView().presentationDetents([PresentationDetent .large])
-                        .interactiveDismissDisabled(true)
-                }
                 .sheet(isPresented: $showSettings){
                     SettingsView().presentationDetents([PresentationDetent .large])
                 }//end sett
@@ -313,8 +286,6 @@ struct ContentView: View {
             }
             Spacer()
         }//end Z
-        
-        
     }//end body
 
     func editdis() -> Bool{

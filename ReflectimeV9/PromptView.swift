@@ -12,51 +12,21 @@ struct PromptView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "date", ascending: false)]) var motivations: FetchedResults<Motivations>
     
-    
     @State private var motivateAdd = ""
-    
-    @State private var showPay = false
+
     
     let defaults = UserDefaults.standard
 
     
     var body: some View {
-        List(){
-            Section{
-                if(defaults.bool(forKey: "pro") == false){
+        NavigationView{
+            List(){
+                Section("Enter your new Prompt here:"){
                     HStack{
+                        TextField("Prompt:", text: $motivateAdd)
                         Spacer()
-                        ZStack{
-                            Rectangle()
-                                .frame(width: 340, height: 30, alignment: .center)
-                                .foregroundColor(Color("BackColor"))
-                                .cornerRadius(10)
-                                .shadow(radius: 3)
-                                .onTapGesture{
-                                    defaults.set(false, forKey: "warn")
-                                    showPay = true
-                                }
-                            Text("You have \(10 - defaults.integer(forKey: "prom")) free custom prompts remaining.")
-                                .fixedSize()
-                                .fontWeight(.light)
-                                .multilineTextAlignment(.center)
-                                .dynamicTypeSize(.medium)
-                                .allowsHitTesting(false)
-                        }
-                        Spacer()
-                    }
-                }
-            }
-            Section("Enter your new Prompt here:"){
-                HStack{
-                    TextField("Prompt:", text: $motivateAdd)
-                    Spacer()
-                    Image(systemName: "plus")
-                        .onTapGesture {
-                            
-                            
-                            if(motivateAdd != "" && defaults.bool(forKey: "pro") == true || defaults.integer(forKey: "prom") < 10){
-                                
+                        Image(systemName: "plus")
+                            .onTapGesture {
                                 let adder = defaults.integer(forKey: "prom")
                                 defaults.set(adder + 1, forKey: "prom")
                                 
@@ -65,25 +35,22 @@ struct PromptView: View {
                                 con.date = Date()
                                 motivateAdd = ""
                                 try?moc.save()
-                            }else{
-                                showPay = true
                             }
-                        }
-                    
+                        
+                    }
+                }
+                Section("Prompts:"){
+                    ForEach(motivations){ mote in
+                        Text(mote.item ?? "f")
+                    }.onDelete(perform: removeItems)
                 }
             }
-            ForEach(motivations){ mote in
-                Text(mote.item ?? "f")
-            }.onDelete(perform: removeItems)
+        }.navigationViewStyle(StackNavigationViewStyle())
+            .toolbar{
+                EditButton()
+            }
         }
-        .sheet(isPresented: $showPay){
-            subscribeView().presentationDetents([PresentationDetent .large])
-                .interactiveDismissDisabled(true)
-        }
-        .toolbar{
-            EditButton()
-        }
-    }
+    
     func removeItems(offsets: IndexSet) {
         for offset in offsets{
             let motivate = motivations[offset]

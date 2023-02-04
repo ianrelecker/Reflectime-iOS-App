@@ -25,7 +25,6 @@ struct EditView: View {
     @State private var note = ""
     @State private var cata = ""
     
-    //@State private var idea = motivations()
     @State private var showLoc = locationHandler.share.user
     @State private var colortext = Color(UIColor.systemGray4)
     @State private var secondColor = Color("Background")
