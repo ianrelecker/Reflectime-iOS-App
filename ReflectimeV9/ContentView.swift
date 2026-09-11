@@ -50,36 +50,37 @@ struct ContentView: View {
                     .buttonStyle(.glassProminent)
                 }
             } else {
-                List {
+                VStack(alignment: .leading, spacing: 0) {
                     if searchText.isEmpty {
-                        Section {
-                            TodayPromptCard(
-                                wroteToday: reflections.contains { Calendar.current.isDateInToday($0.createdAt) },
-                                prompt: todayPrompt,
-                                onWrite: { onCompose(todayPrompt) }
-                            )
-                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                            .listRowBackground(Color.clear)
-                        }
+                        TodayPromptCard(
+                            wroteToday: reflections.contains { Calendar.current.isDateInToday($0.createdAt) },
+                            prompt: todayPrompt,
+                            onWrite: { onCompose(todayPrompt) }
+                        )
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
+                        .padding(.bottom, 12)
                     }
-                    ForEach(grouped, id: \.0) { category, items in
-                        Section(category) {
-                            ForEach(items, id: \.objectID) { reflection in
-                                NavigationLink {
-                                    NoteDetail(reflection: reflection)
-                                } label: {
-                                    ReflectionRow(reflection: reflection)
-                                }
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button("Delete", systemImage: "trash", role: .destructive) {
-                                        pendingDelete = reflection
+                    List {
+                        ForEach(grouped, id: \.0) { category, items in
+                            Section(category) {
+                                ForEach(items, id: \.objectID) { reflection in
+                                    NavigationLink {
+                                        NoteDetail(reflection: reflection)
+                                    } label: {
+                                        ReflectionRow(reflection: reflection)
+                                    }
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button("Delete", systemImage: "trash", role: .destructive) {
+                                            pendingDelete = reflection
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    .listStyle(.insetGrouped)
                 }
-                .listStyle(.insetGrouped)
             }
         }
         .navigationTitle("Reflectime")
@@ -98,20 +99,6 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                         .accessibilityLabel("\(reflections.count) reflections")
                 }
-            }
-        }
-        .safeAreaInset(edge: .bottom, alignment: .trailing) {
-            if !reflections.isEmpty {
-                Button(action: { onCompose(nil) }) {
-                    Label("New Reflection", systemImage: "plus")
-                        .font(.headline)
-                        .padding(.horizontal, 18)
-                        .padding(.vertical, 14)
-                }
-                .buttonStyle(.glassProminent)
-                .padding(.trailing, 20)
-                .padding(.bottom, 8)
-                .accessibilityLabel("New reflection")
             }
         }
         .confirmationDialog(
@@ -164,18 +151,20 @@ private struct TodayPromptCard: View {
     let onWrite: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Label(wroteToday ? "You already wrote today" : "Today’s prompt", systemImage: wroteToday ? "checkmark.circle" : "sun.max")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            Text(prompt)
-                .font(.body)
-            Button(wroteToday ? "Write another" : "Write from this", action: onWrite)
-                .buttonStyle(.glassProminent)
+        Button(action: onWrite) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(wroteToday ? "You already wrote today" : "Today’s prompt")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(prompt)
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .buttonStyle(.plain)
+        .accessibilityHint("Opens a new reflection with this prompt")
     }
 }
 
