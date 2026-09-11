@@ -22,7 +22,7 @@ struct NoteAdd: View {
     @State private var idea = ""
     @State private var saveError: ReflectionStoreError?
     @State private var confirmCancel = false
-    @State private var timedSession = true
+    @State private var timedSession = false
     @State private var sessionEnd = Date()
     @State private var savePulse = 0
     @FocusState private var focusedField: Field?
