@@ -74,7 +74,7 @@ struct SettingsView: View {
             }
 
             Section("Support") {
-                if let url = URL(string: "https://relecker.com/privacy") {
+                if let url = URL(string: "https://relecker.com/reflectime/privacy") {
                     Link("Privacy Policy", destination: url)
                 }
                 if let url = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/") {

@@ -33,5 +33,5 @@ Location is only stored when you include it on a reflection. On-device insights 
 
 ## Support
 
-- [Privacy Policy](https://relecker.com/privacy)
+- [Privacy Policy](https://relecker.com/reflectime/privacy)
 - [Contact](https://relecker.com/contact)
