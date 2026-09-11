@@ -1,180 +1,75 @@
-//
-//  SettingsView.swift
-//  ReflectimeV9
-//
-//  Created by Ian Relecker on 11/26/22.
-//
-
 import SwiftUI
-import UserNotifications
-import RevenueCat
-
 
 struct SettingsView: View {
-    private let locationAddH = locationHandler()
-    @State var locationOn = locationOnF()
-    @Environment(\.dismiss) var dismiss
-    @State var notificationH = notificationTime()
-    @State var notificationToggle = notificationStatus()
-    @AppStorage("sendNot") var sendNot = true
-    @AppStorage("showP") var showP = true
-    @State var alertV = false
-    @State var tex = ""
-    
-    
-    
-    let defaults = UserDefaults.standard
-    
-    
+    @EnvironmentObject private var location: LocationProvider
+    @AppStorage("sendNot") private var sendNotifications = true
+    @AppStorage("showP") private var showPrompts = true
+    @State private var reminderTime = ReflectionNotifier.storedReminderDate()
+
     var body: some View {
-        NavigationView{
-            Form{
-                Section("Daily Notifications"){
-                    DatePicker("Select A Time To Be Reminded To Reflect",selection: $notificationH, displayedComponents: .hourAndMinute)
-                        .onChange(of: notificationH){ state in
-                            NotificationClass().schedule(dateInput: notificationH)
-                            let defaults = UserDefaults.standard
-                            notificationH = defaults.object(forKey: "Date") as! Date
-                            defaults.set(notificationToggle, forKey: "toggleNotify")
-                            //defaults.set(showdate, forKey: "showdate")
-                            print(Calendar.current.dateComponents([.minute], from: notificationH))
-                            print(Calendar.current.dateComponents([.hour], from: notificationH))
-                            defaults.set(sendNot, forKey: "sendNot")
-                            defaults.set(showP, forKey: "showP")
-                            print(state)
-                        }
-                        
-                    
-                    Toggle(isOn: $sendNot){
-                        Text("Send Daily Notifications")
-                    }
-                    .onSubmit {
-                        NotificationClass().schedule(dateInput: notificationH)
-                        let defaults = UserDefaults.standard
-                        notificationH = defaults.object(forKey: "Date") as! Date
-                        defaults.set(notificationToggle, forKey: "toggleNotify")
-                        //defaults.set(showdate, forKey: "showdate")
-                        print(Calendar.current.dateComponents([.minute], from: notificationH))
-                        print(Calendar.current.dateComponents([.hour], from: notificationH))
-                        defaults.set(sendNot, forKey: "sendNot")
-                        defaults.set(showP, forKey: "showP")
-                    }
-                }
-                Section("Prompts"){
-                    NavigationLink("Edit Your Prompts"){
-                        PromptView()
-                    }
-                
-                    Toggle(isOn: $showP){
-                        Text("Show Prompts When Creating A New Reflection")
-                    }.onSubmit {
-                        NotificationClass().schedule(dateInput: notificationH)
-                        let defaults = UserDefaults.standard
-                        notificationH = defaults.object(forKey: "Date") as! Date
-                        defaults.set(notificationToggle, forKey: "toggleNotify")
-                        //defaults.set(showdate, forKey: "showdate")
-                        print(Calendar.current.dateComponents([.minute], from: notificationH))
-                        print(Calendar.current.dateComponents([.hour], from: notificationH))
-                        defaults.set(sendNot, forKey: "sendNot")
-                        defaults.set(showP, forKey: "showP")
-                    }
-                }
-                
-                Section("Support"){
-                    Button("Privacy Policy"){
-                        let urlP = URL(string: "https://www.ianrelecker.com/reflectime-app/privacy-policy")
-                        UIApplication.shared.open(urlP!)
-                    }.foregroundColor(Color.blue)
-                    Button("EULA"){
-                        let urlE = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
-                        UIApplication.shared.open(urlE!)
-                    }.foregroundColor(Color.blue)
-                    Button("Contact Us"){
-                        let urlC = URL(string: "https://www.ianrelecker.com/contact")
-                        UIApplication.shared.open(urlC!)
-                    }.foregroundColor(Color.blue)
-                }
-                
-                Section{
-                    Button("Location Access"){
-                        //
-                    }
-                    .foregroundColor(Color.blue)
-                    .onTapGesture {
-                        if !locationOn {
-                            locationAddH.request()
-                        }
-                        if locationOn {
-                            locationAddH.user = nil
-                        }
-                        locationOn.toggle()
-                    }
-                    
-                    
-                    Button("Notifcation Access"){
-                        //
-                    }
-                    .foregroundColor(Color.blue)
-                    .onTapGesture {
-                        if(!notificationToggle){
-                            NotificationClass().requestPermission()
-                        }
-                        notificationToggle.toggle()
-                    }
-                } header: {
-                    Text("Prompt for Access")
-                } footer: {
-                    Text("These buttons will prompt the system for access for your location or notifications.\nIf nothing appears after you click these buttons,  enable this functionality in Settings.\nScroll down on the main page to \"Reflectime\" and provide access.")
-                }
-                
+        Form {
+            Section("Daily reminder") {
+                DatePicker("Remind me at", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                Toggle("Send daily notifications", isOn: $sendNotifications)
             }
-            .navigationTitle("Settings")
-            .onDisappear{
-                NotificationClass().schedule(dateInput: notificationH)
-                let defaults = UserDefaults.standard
-                notificationH = defaults.object(forKey: "Date") as! Date
-                defaults.set(notificationToggle, forKey: "toggleNotify")
-                //defaults.set(showdate, forKey: "showdate")
-                print(Calendar.current.dateComponents([.minute], from: notificationH))
-                print(Calendar.current.dateComponents([.hour], from: notificationH))
-                defaults.set(sendNot, forKey: "sendNot")
-                defaults.set(showP, forKey: "showP")
-                print("HERE" + "\(sendNot)")
+
+            Section("Writing") {
+                NavigationLink("Edit your prompts") {
+                    PromptView()
+                }
+                Toggle("Show prompts when writing", isOn: $showPrompts)
+            }
+
+            Section("Privacy") {
+                LabeledContent("Location") {
+                    Text(location.isAuthorized ? "On" : "Off")
+                        .foregroundStyle(.secondary)
+                }
+                Button("Request location access") {
+                    location.requestAccess()
+                }
+                Button("Request notification access") {
+                    ReflectionNotifier.shared.requestPermission()
+                }
+            } footer: {
+                Text("Location is only stored with a reflection when you choose to include it. Notifications are a daily nudge to write. If a prompt doesn’t appear, open Settings → Reflectime and grant access there.")
+            }
+
+            Section("Support") {
+                if let url = URL(string: "https://www.ianrelecker.com/reflectime-app/privacy-policy") {
+                    Link("Privacy Policy", destination: url)
+                }
+                if let url = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/") {
+                    Link("EULA", destination: url)
+                }
+                if let url = URL(string: "https://www.ianrelecker.com/contact") {
+                    Link("Contact", destination: url)
+                }
+            }
+
+            Section("About") {
+                LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "3.0")
+                Text("Reflections stay on your devices through iCloud. On-device insights never leave the phone.")
+                    .foregroundStyle(.secondary)
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
-        
-        
-    }
-    
-}
-
-func notificationStatus() -> Bool{
-    let defaults = UserDefaults.standard
-    return defaults.bool(forKey: "authorized")
-}
-
-func notificationTime() -> Date{
-    let defaults = UserDefaults.standard
-    var date = defaults.object(forKey: "Date")
-    if (date == nil){
-        print("nil date")
-        date = Date()
-    }
-    return date as! Date
-}
-
-
-func locationOnF() -> Bool {
-    if(locationHandler.share.user != nil){
-        return true
-    }else{
-        return false
+        .formStyle(.grouped)
+        .navigationTitle("Settings")
+        .onChange(of: reminderTime) { _, newValue in
+            ReflectionNotifier.shared.applySchedule(date: newValue, enabled: sendNotifications)
+        }
+        .onChange(of: sendNotifications) { _, enabled in
+            ReflectionNotifier.shared.applySchedule(date: reminderTime, enabled: enabled)
+        }
+        .onAppear {
+            reminderTime = ReflectionNotifier.storedReminderDate()
+        }
     }
 }
 
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    NavigationStack {
         SettingsView()
     }
+    .environmentObject(LocationProvider.shared)
 }

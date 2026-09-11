@@ -1,53 +1,83 @@
-//
-//  TabsView.swift
-//  ReflectimeV9
-//
-//  Created by Ian Relecker on 12/8/22.
-//
-
 import SwiftUI
 
+enum AppTab: Hashable {
+    case journal
+    case reflect
+    case map
+    case settings
+    case search
+}
+
 struct TabsView: View {
+    @EnvironmentObject private var dataController: DataController
+    @State private var selectedTab: AppTab = .journal
+    @State private var showComposer = false
+    @State private var composerPrompt: String?
+    @AppStorage("showIntro") private var showIntro = true
+
     var body: some View {
-        VStack{
-            
-                TabView{
-                    
-                    ContentView()
-                        .tabItem({
-                            Image(systemName: "house")
-                            Text("Home")
-                        })
-                    CalendarView()
-                        .tabItem({
-                            Image(systemName: "brain.head.profile")
-                            Text("Reflect")
-                        })
-                    /*
+        TabView(selection: $selectedTab) {
+            Tab("Journal", systemImage: "book.pages", value: .journal) {
+                NavigationStack {
+                    ContentView(onCompose: { presentComposer() })
+                }
+            }
+            Tab("Reflect", systemImage: "sparkles", value: .reflect) {
+                NavigationStack {
+                    CalendarView(onCompose: { presentComposer() })
+                }
+            }
+            Tab("Map", systemImage: "map", value: .map) {
+                NavigationStack {
                     MapViewAll()
-                        .tabItem({
-                            Image(systemName: "map")
-                            Text("Map")
-                        })
-                     */
+                }
+            }
+            Tab("Settings", systemImage: "gearshape", value: .settings) {
+                NavigationStack {
                     SettingsView()
-                        .tabItem({
-                            Image(systemName: "gear")
-                            Text("Settings")
-                            
-                        })
-                    
-                    
-                }.tableStyle(.inset)
-                
-            
-            
+                }
+            }
+            Tab("Search", systemImage: "magnifyingglass", value: .search, role: .search) {
+                NavigationStack {
+                    SearchView()
+                }
+            }
         }
+        .tabBarMinimizeBehavior(.onScrollDown)
+        .tabViewStyle(.sidebarAdaptable)
+        .sheet(isPresented: $showComposer) {
+            NavigationStack {
+                NoteAdd(initialPrompt: composerPrompt)
+            }
+            .presentationDetents([.large])
+        }
+        .sheet(isPresented: $showIntro) {
+            NavigationStack {
+                IntroView()
+            }
+            .interactiveDismissDisabled(true)
+            .presentationDetents([.large])
+        }
+        .onReceive(NotificationCenter.default.publisher(for: ReflectimeRouter.compose)) { notification in
+            composerPrompt = notification.object as? String
+            showComposer = true
+            selectedTab = .journal
+        }
+        .onReceive(NotificationCenter.default.publisher(for: ReflectimeRouter.search)) { _ in
+            selectedTab = .search
+        }
+        .reflectimeErrorAlert($dataController.storeError)
+    }
+
+    private func presentComposer(prompt: String? = nil) {
+        composerPrompt = prompt
+        showComposer = true
     }
 }
 
-struct TabsView_Previews: PreviewProvider {
-    static var previews: some View {
-        TabsView()
-    }
+#Preview {
+    TabsView()
+        .environment(\.managedObjectContext, DataController(inMemory: true).container.viewContext)
+        .environmentObject(DataController(inMemory: true))
+        .environmentObject(LocationProvider.shared)
 }

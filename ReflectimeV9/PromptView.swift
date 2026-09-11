@@ -1,69 +1,85 @@
-//
-//  PromptView.swift
-//  ReflectimeV9
-//
-//  Created by Ian Relecker on 12/17/22.
-//
-
+import CoreData
 import SwiftUI
 
 struct PromptView: View {
+    @EnvironmentObject private var dataController: DataController
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Motivations.date, ascending: false)],
+        animation: .default
+    ) private var motivations: FetchedResults<Motivations>
 
-    @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "date", ascending: false)]) var motivations: FetchedResults<Motivations>
-    
-    @State private var motivateAdd = ""
+    @State private var draft = ""
+    @State private var saveError: ReflectionStoreError?
 
-    
-    let defaults = UserDefaults.standard
-
-    
     var body: some View {
-        NavigationView{
-            List(){
-                Section("Enter your new Prompt here:"){
-                    HStack{
-                        TextField("Prompt:", text: $motivateAdd)
-                        Spacer()
-                        Image(systemName: "plus")
-                            .onTapGesture {
-                                let adder = defaults.integer(forKey: "prom")
-                                defaults.set(adder + 1, forKey: "prom")
-                                
-                                let con = Motivations(context: moc)
-                                con.item = motivateAdd
-                                con.date = Date()
-                                motivateAdd = ""
-                                try?moc.save()
-                            }
-                        
+        List {
+            Section("New prompt") {
+                HStack {
+                    TextField("Write a prompt", text: $draft, axis: .vertical)
+                    Button {
+                        addPrompt()
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
                     }
-                }
-                Section("Prompts:"){
-                    ForEach(motivations){ mote in
-                        Text(mote.item ?? "f")
-                    }.onDelete(perform: removeItems)
+                    .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .accessibilityLabel("Add prompt")
                 }
             }
-        }.navigationViewStyle(StackNavigationViewStyle())
-            .toolbar{
-                EditButton()
+            Section("Prompts") {
+                if motivations.isEmpty {
+                    Text("No prompts yet. Add one above, or they will be seeded the first time you open the app.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(motivations, id: \.objectID) { prompt in
+                        Text(prompt.item ?? "")
+                    }
+                    .onDelete(perform: delete)
+                }
             }
         }
-    
-    func removeItems(offsets: IndexSet) {
-        for offset in offsets{
-            let motivate = motivations[offset]
-            moc.delete(motivate)
-            try?moc.save()
-            
+        .navigationTitle("Prompts")
+        .toolbar {
+            EditButton()
         }
-        
+        .reflectimeErrorAlert($saveError)
+    }
+
+    private func addPrompt() {
+        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        let item = Motivations(context: dataController.container.viewContext)
+        item.item = text
+        item.date = Date()
+        draft = ""
+        do {
+            try dataController.save()
+        } catch let error as ReflectionStoreError {
+            dataController.container.viewContext.delete(item)
+            saveError = error
+        } catch {
+            dataController.container.viewContext.delete(item)
+            saveError = .saveFailed(error.localizedDescription)
+        }
+    }
+
+    private func delete(at offsets: IndexSet) {
+        for index in offsets {
+            dataController.container.viewContext.delete(motivations[index])
+        }
+        do {
+            try dataController.save()
+        } catch let error as ReflectionStoreError {
+            saveError = error
+        } catch {
+            saveError = .saveFailed(error.localizedDescription)
+        }
     }
 }
 
-struct PromptView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    NavigationStack {
         PromptView()
     }
+    .environmentObject(DataController(inMemory: true))
+    .environment(\.managedObjectContext, DataController(inMemory: true).container.viewContext)
 }

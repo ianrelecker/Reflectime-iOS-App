@@ -1,330 +1,280 @@
-//
-//  ContentView.swift
-//  ReflectimeV9
-//
-//  Created by Ian Relecker on 10/29/22.
-//  Nav view section for each adapted from https://www.youtube.com/watch?v=nViffcoa-Ec
-//  Map View adapted from https://developer.apple.com/documentation/mapkit/
-//
-
-import SwiftUI
-import MapKit
-import CoreLocation
-import UserNotifications
 import CoreData
-import RevenueCat
+import SwiftUI
 
+struct ContentView: View {
+    var onCompose: () -> Void = {}
 
+    @Environment(\.managedObjectContext) private var moc
+    @EnvironmentObject private var dataController: DataController
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Reflection.date, ascending: false)],
+        animation: .default
+    ) private var reflections: FetchedResults<Reflection>
 
+    @State private var searchText = ""
+    @State private var saveError: ReflectionStoreError?
+    @State private var pendingDelete: Reflection?
+
+    private var filtered: [Reflection] {
+        let items = Array(reflections)
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return items }
+        return items.filter { reflection in
+            reflection.titleText.localizedCaseInsensitiveContains(query)
+                || reflection.bodyText.localizedCaseInsensitiveContains(query)
+                || reflection.categoryName.localizedCaseInsensitiveContains(query)
+        }
+    }
+
+    private var grouped: [(String, [Reflection])] {
+        let groups = Dictionary(grouping: filtered, by: \.categoryName)
+        return ReflectionCategory.allCases.compactMap { category in
+            let items = groups[category.rawValue] ?? []
+            return items.isEmpty ? nil : (category.rawValue, items)
+        }
+    }
+
+    var body: some View {
+        Group {
+            if reflections.isEmpty {
+                ContentUnavailableView {
+                    Label("No reflections yet", systemImage: "book.closed")
+                } description: {
+                    Text("Write your first one. It’s private, on this device, and synced with iCloud when you’re signed in.")
+                } actions: {
+                    Button("New Reflection", systemImage: "plus") {
+                        onCompose()
+                    }
+                    .buttonStyle(.glassProminent)
+                }
+            } else {
+                List {
+                    ForEach(grouped, id: \.0) { category, items in
+                        Section(category) {
+                            ForEach(items, id: \.objectID) { reflection in
+                                NavigationLink {
+                                    NoteDetail(reflection: reflection)
+                                } label: {
+                                    ReflectionRow(reflection: reflection)
+                                }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button("Delete", systemImage: "trash", role: .destructive) {
+                                        pendingDelete = reflection
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .listStyle(.insetGrouped)
+            }
+        }
+        .navigationTitle("Reflectime")
+        .searchable(text: $searchText, prompt: "Search reflections")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("New Reflection", systemImage: "plus") {
+                    onCompose()
+                }
+            }
+            ToolbarSpacer(.fixed)
+            ToolbarItem(placement: .primaryAction) {
+                if !reflections.isEmpty {
+                    Text("\(reflections.count)")
+                        .font(.subheadline.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel("\(reflections.count) reflections")
+                }
+            }
+        }
+        .safeAreaInset(edge: .bottom, alignment: .trailing) {
+            if !reflections.isEmpty {
+                Button(action: onCompose) {
+                    Label("New Reflection", systemImage: "plus")
+                        .font(.headline)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 14)
+                }
+                .buttonStyle(.glassProminent)
+                .padding(.trailing, 20)
+                .padding(.bottom, 8)
+                .accessibilityLabel("New reflection")
+            }
+        }
+        .confirmationDialog(
+            "Delete this reflection?",
+            isPresented: Binding(
+                get: { pendingDelete != nil },
+                set: { if !$0 { pendingDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let pendingDelete {
+                    delete(pendingDelete)
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                pendingDelete = nil
+            }
+        } message: {
+            Text("This can’t be undone.")
+        }
+        .reflectimeErrorAlert($saveError)
+        .scrollEdgeEffectStyle(.soft, for: .top)
+    }
+
+    private func delete(_ reflection: Reflection) {
+        do {
+            try dataController.delete(reflection)
+        } catch let error as ReflectionStoreError {
+            saveError = error
+        } catch {
+            saveError = .saveFailed(error.localizedDescription)
+        }
+        pendingDelete = nil
+    }
+}
+
+struct ReflectionRow: View {
+    let reflection: Reflection
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(spacing: 2) {
+                Text(reflection.createdAt.formatted(.dateTime.month(.abbreviated)))
+                    .font(.caption.weight(.medium))
+                Text(reflection.createdAt.formatted(.dateTime.day()))
+                    .font(.title3.weight(.semibold))
+            }
+            .foregroundStyle(.tint)
+            .frame(width: 48)
+            .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(reflection.titleText)
+                    .font(.headline)
+                    .lineLimit(1)
+                Text(reflection.bodyText)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            if reflection.hasLocation {
+                Image(systemName: "location.fill")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .accessibilityLabel("Includes location")
+            }
+        }
+        .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(reflection.titleText), \(reflection.categoryName), \(reflection.createdAt.formatted(date: .abbreviated, time: .omitted))")
+    }
+}
 
 struct NoteDetail: View {
     let reflection: Reflection
+    @State private var showEdit = false
+    @ObservedObject private var intelligence = ReflectionIntelligence.shared
+    @State private var assist: ReflectionAssist?
+    @State private var assistError: ReflectionStoreError?
 
-    @ObservedObject var locationhandler = locationHandler.share
-    
-    
-    @State private var showedit = false
-    @State private var showMap = locationHandler.share.user
-    @AppStorage("showW") var showW = false
-    
-    @AppStorage("sub") var sub = false
-    
-    var body: some View{
-        //NavigationView{
-                Form{
-                    Section{
-                        VStack{
-                            HStack{
-                                Text("Title:")
-                                    .foregroundColor(Color("Background"))
-                                    .fontWeight(.light)
-                                    .opacity(5)
-                                Spacer()
-                            }
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundColor(Color("Background"))
-                            HStack{
-                                Text(reflection.name ?? "Fail")
-                                    .foregroundColor(Color("Background"))
-                                    .font(.title)
-                                Spacer()
-                            }
-                        }
-                    }
-                    
-                    Section{
-                        VStack{
-                            HStack{
-                                Text("Your Thought:")
-                                    .opacity(5)
-                                    .foregroundColor(Color("Background"))
-                                    .fontWeight(.light)
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                Spacer()
-                            }
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundColor(Color("Background"))
-                            HStack{
-                                Text(reflection.note ?? "Fail")
-                                    .foregroundColor(Color("Background"))
-                                    .font(.title2)
-                                    
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
-                                    .cornerRadius(5)
-                                
-                                Spacer()
-                            }
-                        }
-                    }
-                    Text("\(reflection.date?.formatted(date: .complete, time: .shortened) ?? Date().formatted())")
-                                            .foregroundColor(Color("Background"))
-                                            .font(.caption)
-                    VStack{
-                             if (reflection.lon != 0){
-                                 /*
-                             Text("You were here:").foregroundColor(Color("Background"))
-                             .frame(maxWidth: .infinity, alignment: .leading)
-                             .font(.caption)
-                                 */
-                                 ZStack{
-                                     MapView(place: IdentifiablePlace(id: UUID(), lat: reflection.lat, lon: reflection.lon))
-                                         
-                                     /*
-                                     Image(systemName: "location.circle.fill")
-                                         .resizable()
-                                         .scaledToFit()
-                                         .foregroundColor(.blue)
-                                         .frame(width: 40, height: 40)
-                                         .disabled(true)
-                                      */
-                                 }
-                             
-                             }else{
-                             Text("Location Not Included In This Reflection")
-                             .foregroundColor(Color("Background"))
-                             .font(.caption)
-                             
-                             }
-                             
-                    }//v
-                    
-                    
-                }//f
-                
-                
-        //}//nav
-        .sheet(isPresented: $showedit){
-            EditView(reflection: reflection).presentationDetents([PresentationDetent .fraction(0.7)])
-        }
-        .toolbar{
-            
-                ZStack{
-                    
-                    Rectangle()
-                        .cornerRadius(10)
-                        .foregroundColor(Color(UIColor.systemGray5))
-                        .frame(width: 60, height: 30)
-                        .ignoresSafeArea()
-                    Button{
-                        showedit = true
-                    }label: {
-                        Text("Edit")
-                            .fontWeight(.light)
-                            .foregroundColor(Color(UIColor.systemBlue))
-                    }
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8))
-                }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 30))
-                
-            
-        }
-    }//body
-}//view
-
-
-struct ContentView: View {
-    @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: []) var reflections: FetchedResults<Reflection>
-    
-    @State private var holdingdisText = ""
-    
-    @ObservedObject var locationhandler = locationHandler.share
-    
-    @State private var showAdd = false
-    @State private var showSettings = false
-    let defaults = UserDefaults.standard
-    @AppStorage("showIntro") var showIntro = true
-    
-    @State private var showdia = false
-    
-    @State private var showcount = true
-    
-    
     var body: some View {
-        ZStack{
-            
-            NavigationView{
-                List(){
-                    ForEach(reflections){ reflect in
-                            Section(reflect.cata ?? "Fail Sc"){
-                                NavigationLink{
-                                    NoteDetail(reflection: reflect.self)
-                                        .onAppear{showcount = false}
-                                }
-                                
-                                label: {
-                                    VStack{
-                                        HStack{
-                                            ZStack{
-                                                Rectangle()
-                                                    .cornerRadius(15)
-                                                    .foregroundColor(Color(UIColor.systemGray6))
-                                                    .opacity(20)
-                                                    .frame(width: 50, height: 50)
-                                                VStack{
-                                                    Text(reflect.date?.formatted(.dateTime.month(.abbreviated)) ?? "Fail c")
-                                                        .foregroundColor(Color("First"))
-                                                        .fontWeight(.light)
-                                                    Text(reflect.date?.formatted(.dateTime.day()) ?? "Fail c")
-                                                        .fontWeight(.light)
-                                                        .foregroundColor(Color("First"))
-                                                }
-                                            }
-                                            
-                                            VStack{
-                                                HStack{
-                                                    Text(reflect.name ?? "Fail n")
-                                                        .font(.body)
-                                                        
-                                                    Spacer()
-                                                }
-                                                Rectangle()
-                                                    .frame(height: 1)
-                                                    .foregroundColor(Color("Background"))
-                                                    .ignoresSafeArea()
-                                                    .padding(EdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0))
-                                                HStack{
-                                                    
-                                                    let txt = (reflect.note ?? "Fail note")
-                                                        
-                                                    TextField(txt, text: $holdingdisText)
-                                                        .fontWeight(.medium)
-                                                        .disabled(true)
-                                                        .allowsHitTesting(false)
-                                                        .padding(EdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0))
-                                                    
-                                                    Spacer()
-                                                }
-                                            }
-                                        }
-                                        
-                                    }
-                                }
-                                .allowsHitTesting(false)
-                                
-                            }
-                        
-                    }
-                    .onDelete(perform: removeItems)
+        List {
+            Section("Title") {
+                Text(reflection.titleText)
+                    .font(.title2.weight(.semibold))
+                    .textSelection(.enabled)
+            }
+            Section("Your thought") {
+                Text(reflection.bodyText.isEmpty ? "No text in this reflection." : reflection.bodyText)
+                    .font(.body)
+                    .textSelection(.enabled)
+            }
+            Section("Details") {
+                LabeledContent("Written") {
+                    Text(reflection.createdAt.formatted(date: .complete, time: .shortened))
                 }
-                .onAppear{
-                    showcount = true
+                LabeledContent("Category") {
+                    Text(reflection.categoryName)
                 }
-                //end list
-                .toolbar{
-                    if(reflections.count != 0){
-                        ZStack{
-                            Rectangle()
-                                .frame(width: 80, height: 30)
-                                .foregroundColor(Color(UIColor.systemGray5))
-                                .cornerRadius(10)
-                            Text("Count: \(reflections.count)")
+            }
+            if reflection.hasLocation {
+                Section("Where you were") {
+                    MapView(place: IdentifiablePlace(id: reflection.id ?? UUID(), lat: reflection.lat, lon: reflection.lon))
+                        .listRowInsets(EdgeInsets())
+                        .frame(minHeight: 180)
+                }
+            }
+            if intelligence.isAvailable {
+                Section("On-device insights") {
+                    if let assist {
+                        if !assist.tags.isEmpty {
+                            Text(assist.tags.joined(separator: " · "))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
                         }
+                        Text(assist.summary)
+                        Text(assist.followUp)
+                            .italic()
+                    } else {
+                        Button {
+                            Task { await runAssist() }
+                        } label: {
+                            if intelligence.isRunning {
+                                ProgressView("Reading privately…")
+                            } else {
+                                Label("Summarize this reflection", systemImage: "sparkles")
+                            }
+                        }
+                        .disabled(intelligence.isRunning)
                     }
-                    EditButton().disabled(editdis())
-                    Button{
-                        showAdd = true
-                    }label: {
-                        Image(systemName: "plus")
-                    }//end button
-                }//end toolbar
-                .sheet(isPresented: $showSettings){
-                    SettingsView().presentationDetents([PresentationDetent .large])
-                }//end sett
-                .sheet(isPresented: $showIntro){
-                    IntroView().presentationDetents([PresentationDetent .fraction(0.9)]).interactiveDismissDisabled(true)
-                }//end intro
-                .sheet(isPresented: $showAdd){
-                    NoteAdd().presentationDetents([PresentationDetent .large])
-                }//end add
-                .navigationTitle(Text("Reflectime"))
-                .onAppear{
-                    UIApplication.shared.applicationIconBadgeNumber = 0
                 }
-                
-            }//end navview
-            .navigationViewStyle(StackNavigationViewStyle())
-            .onAppear{
-                UIApplication.shared.applicationIconBadgeNumber = 0
-            }
-            
-            if(reflections.count == 0){
-                ZStack{
-                    Rectangle()
-                        .frame(width: 300, height: 60, alignment: .center)
-                        .foregroundColor(Color("BackColor"))
-                        .cornerRadius(15)
-                        .shadow(radius: 3)
-                    Text("Create a new Reflection by clicking\nthe \"\(Image(systemName: "plus"))\" icon in the top right.")
-                        .fontWeight(.light)
-                        .multilineTextAlignment(.center)
-                        .fixedSize()
-                        .dynamicTypeSize(.medium)
+            } else if let message = intelligence.availabilityMessage {
+                Section("On-device insights") {
+                    Text(message)
+                        .foregroundStyle(.secondary)
                 }
-                
             }
-            Spacer()
-        }//end Z
-    }//end body
+        }
+        .navigationTitle(reflection.titleText)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Edit", systemImage: "pencil") {
+                    showEdit = true
+                }
+            }
+            ToolbarSpacer(.fixed)
+            ToolbarItem(placement: .primaryAction) {
+                ShareLink(item: reflection.exportText)
+            }
+        }
+        .sheet(isPresented: $showEdit) {
+            NavigationStack {
+                EditView(reflection: reflection)
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .reflectimeErrorAlert($assistError)
+    }
 
-    func editdis() -> Bool{
-        if(reflections.count == 0){
-            return true
-        }else{
-            return false
+    private func runAssist() async {
+        do {
+            assist = try await intelligence.assist(on: "\(reflection.titleText)\n\n\(reflection.bodyText)")
+        } catch let error as ReflectionStoreError {
+            assistError = error
+        } catch {
+            assistError = .intelligenceUnavailable
         }
     }
-    
-    func getPro() -> Bool{
-        if defaults.bool(forKey: "pro") == true {
-            return true
-        } else {
-            return false
-            
-        }
-    }
-    
-    func showIntroF() -> Bool {
-        let defaults = UserDefaults.standard
-        return defaults.bool(forKey: "showIntro")
-    }
-   func removeItems(offsets: IndexSet) {
-       for offset in offsets{
-           let reflection = reflections[offset]
-           moc.delete(reflection)
-           try?moc.save()
-           
-       }
-       
-   }
-    
-    
-}// end contentview
+}
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    NavigationStack {
         ContentView()
-        
     }
+    .environment(\.managedObjectContext, DataController(inMemory: true).container.viewContext)
+    .environmentObject(DataController(inMemory: true))
 }

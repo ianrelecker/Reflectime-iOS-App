@@ -1,230 +1,158 @@
-//
-//  NoteAdd.swift
-//  ReflectimeV9
-//
-//  Created by Ian Relecker on 10/29/22.
-//
-
+import CoreData
 import SwiftUI
-import MapKit
-import RevenueCat
-
 
 struct NoteAdd: View {
-    @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: []) var reflections: FetchedResults<Reflection>
-    
-    @FetchRequest(sortDescriptors: []) var motivations: FetchedResults<Motivations>
-    
-    
+    var initialPrompt: String? = nil
 
-    
-    
-    let defaults = UserDefaults.standard
-    @Environment(\.dismiss) var dismiss
-    private let locationAddH = locationHandler()
-    
+    @Environment(\.managedObjectContext) private var moc
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var dataController: DataController
+    @EnvironmentObject private var location: LocationProvider
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Motivations.date, ascending: false)]
+    ) private var motivations: FetchedResults<Motivations>
+
+    @AppStorage("showP") private var showPrompts = true
+
     @State private var name = ""
-    @State private var data = "Thought\n \n \n \n"
-    @State private var firsttap = false
-    @State private var date = Date()
+    @State private var bodyText = ""
+    @State private var category = ReflectionCategory.general.rawValue
     @State private var includeLocation = true
-    
-    @State private var cat = "General"
-    var cats = ["General", "Personal", "Work", "Feelings", "Wishes", "Intrests", "Love", "Activity"]
-    
-    @State private var lat = 0.0
-    @State private var lon = 0.0
-    
-    @State private var showLoc = locationHandler.share.user
-    @State private var colortext = Color(UIColor.systemGray4)
-    @State private var secondColor = Color("Background")
-    
     @State private var idea = ""
-    
-    var body: some View{
-        
-        NavigationView{
+    @State private var saveError: ReflectionStoreError?
+    @FocusState private var focusedField: Field?
 
-                ZStack{
-                    Form{
-                            Section{
-                                VStack{
-                                    HStack{
-                                        Text("Prompt:")
-                                        
-                                            .foregroundColor(Color("Background"))
-                                            .fontWeight(.bold)
-                                        Spacer()
-                                    }
-                                    HStack{
-                                        
-                                        
-                                        Text(idea)
-                                            .fontWeight(.light)
-                                            .foregroundColor(Color("Background"))
-                                        
-                                        Spacer()
-                                        ZStack{
-                                            Rectangle()
-                                                .frame(width: 40, height: 40)
-                                                .foregroundColor(Color(UIColor.lightGray))
-                                                .cornerRadius(10)
-                                                .onTapGesture {
-                                                    idea = gimmePrompt()
-                                                }
-                                            Image(systemName: "shuffle")
-                                                .onTapGesture {
-                                                    idea = gimmePrompt()
-                                                }
-                                        }.frame(width: 40, height: 40, alignment: .trailing)
-                                    }
-                                    
-                                }
-                            }
-                        
-                        Section{
-                            VStack{
-                                HStack{
-                                    Text("Enter a Title: *")
-                                    //.fontWeight(.bold)
-                                    Spacer()
-                                }
-                                TextField("Title", text: $name)
-                                    .foregroundColor(secondColor)
-                                    .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 10))
-                                    .border(Color("Background"), width: 1)
-                                    .cornerRadius(2)
-                                
-                            }
-                            
-                            
-                            VStack{
-                                HStack{
-                                    Text("Enter your Thoughts: *")
-                                        .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                                    //.fontWeight(.bold)
-                                    Spacer()
-                                }
-                                TextEditor(text: $data)
-                                    .frame(minHeight: 30, alignment: .leading)
-                                    .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 10))
-                                    .border(Color("Background"), width: 1)
-                                    .cornerRadius(2)
-                                
-                                    .foregroundColor(colortext)
-                                
-                                    .onTapGesture {
-                                        if(firsttap == false){
-                                            data = ""
-                                            firsttap = true
-                                            colortext = secondColor
-                                        }
-                                    }
-                                Spacer()
-                            }
-                            Section{
-                                Picker(selection: $cat, label: Text("Choose a Catagory").fontWeight(.light)) {
-                                    ForEach(cats, id: \.self){
-                                        Text($0)
-                                    }
-                                }
-                                
-                                if((showLoc) != nil){
-                                    Toggle(isOn: $includeLocation) {
-                                        Text("Do you want to include your location?").fontWeight(.light)
-                                    }
-                                }else{
-                                    Text("Enable location permissions at the bottom of the \"Settings\" tab to add your location to a Reflection")
-                                        .fontWeight(.light)
-                                        .foregroundColor(Color(UIColor.darkGray))
-                                        .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0))
-                                    
-                                }
-                                HStack{
-                                    if(defaults.bool(forKey: "showP")){
-                                        NavigationLink{
-                                            PromptView()
-                                        } label: {
-                                            Text("Click Here To Customize Your Prompts!")
-                                                .foregroundColor(Color.blue)
-                                                .fontWeight(.light)
-                                        }
-                                                
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    }//form
-                    .onAppear{
-                        
+    private enum Field {
+        case title
+        case body
+    }
+
+    private var canSave: Bool {
+        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !bodyText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var body: some View {
+        Form {
+            if showPrompts {
+                Section("Prompt") {
+                    Text(idea.isEmpty ? "Shuffle for a prompt." : idea)
+                        .fontWeight(.light)
+                    Button("Shuffle prompt", systemImage: "shuffle") {
+                        idea = nextPrompt()
                     }
-                }//z
-            .background(Color("BackColor"))
-            .navigationTitle("Add a Reflection")
-            
-            
-            .toolbar{
-                Button("Cancel", role: .cancel, action: {
-                    dismiss()
-                }).foregroundColor(.red)
-                Button("Save"){
-                    if(includeLocation){
-                        (lat, lon) = locationAddH.getuser()
+                    NavigationLink("Customize prompts") {
+                        PromptView()
                     }
-                    let con = Reflection(context: moc)
-                    con.id = UUID()
-                    con.name = name
-                    con.cata = cat
-                    con.note = data
-                    con.lat = lat
-                    con.lon = lon
-                    con.date = Date()
-                    
-                    try? moc.save()
-                    dismiss()
                 }
-                .disabled(savedis())
-                .foregroundColor(saveCol())
-            }//end tool
-            
-        }
-        .onAppear{
-                idea = gimmePrompt()
-        }//end nav
-        
-        
-    }//end some view
-    
-    func gimmePrompt() -> String {
-        var motivation = [String]()
-        for mot in motivations{
-            motivation.append(mot.item ?? "Fail append")
-        }
-        motivation.shuffle()
-        return motivation[0]
-    }
-    
-    func saveCol() -> Color{
-        if(savedis()){
-            return Color(UIColor.systemGray4)
-        }else{
-            return Color(UIColor.systemBlue)
-        }
-    }
-    
-    func savedis() -> Bool{
-        if(data == "Thought\n \n \n \n" || name == ""){
-            return true
-        }else{
-            return false
-        }
-    }
-}//end view
+            }
 
-struct Previews_NoteAdd_Previews: PreviewProvider {
-    static var previews: some View {
+            Section("Reflection") {
+                TextField("Title", text: $name)
+                    .focused($focusedField, equals: .title)
+                TextEditor(text: $bodyText)
+                    .frame(minHeight: 160)
+                    .focused($focusedField, equals: .body)
+                    .accessibilityLabel("Your thoughts")
+            }
+
+            Section("Details") {
+                Picker("Category", selection: $category) {
+                    ForEach(ReflectionCategory.allCases) { item in
+                        Label(item.rawValue, systemImage: item.symbolName)
+                            .tag(item.rawValue)
+                    }
+                }
+
+                if location.isAuthorized {
+                    Toggle("Include my location", isOn: $includeLocation)
+                } else {
+                    Text("Turn on Location in Settings if you want to remember where this was written.")
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .navigationTitle("New Reflection")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel", role: .cancel) { dismiss() }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save") {
+                    save()
+                }
+                .disabled(!canSave)
+            }
+        }
+        .onAppear {
+            if let initialPrompt, !initialPrompt.isEmpty {
+                idea = initialPrompt
+            } else if idea.isEmpty {
+                idea = nextPrompt()
+            }
+            if location.isAuthorized {
+                location.refresh()
+            }
+            focusedField = .title
+        }
+        .reflectimeErrorAlert($saveError)
+    }
+
+    private func nextPrompt() -> String {
+        let items = motivations.compactMap { $0.item?.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+        if let random = items.randomElement() {
+            return random
+        }
+        return ReflectionDefaults.prompts.randomElement() ?? ""
+    }
+
+    private func save() {
+        let title = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let thought = bodyText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty else {
+            saveError = .emptyTitle
+            return
+        }
+        guard !thought.isEmpty else {
+            saveError = .emptyBody
+            return
+        }
+
+        let reflection = Reflection(context: moc)
+        reflection.id = UUID()
+        reflection.name = title
+        reflection.note = thought
+        reflection.cata = category
+        reflection.date = Date()
+        if includeLocation, location.isAuthorized {
+            let coordinate = location.coordinate()
+            reflection.lat = coordinate.0
+            reflection.lon = coordinate.1
+        } else {
+            reflection.lat = 0
+            reflection.lon = 0
+        }
+
+        do {
+            try dataController.save()
+            dismiss()
+        } catch let error as ReflectionStoreError {
+            moc.delete(reflection)
+            saveError = error
+        } catch {
+            moc.delete(reflection)
+            saveError = .saveFailed(error.localizedDescription)
+        }
+    }
+}
+
+#Preview {
+    NavigationStack {
         NoteAdd()
     }
+    .environment(\.managedObjectContext, DataController(inMemory: true).container.viewContext)
+    .environmentObject(DataController(inMemory: true))
+    .environmentObject(LocationProvider.shared)
 }
