@@ -39,6 +39,7 @@ struct SettingsView: View {
             Section("Journal") {
                 LabeledContent("Reflections", value: "\(reflections.count)")
                 Button("Export Markdown") {
+                    refreshExport()
                     showExport = true
                 }
                 .disabled(reflections.isEmpty)
@@ -102,7 +103,7 @@ struct SettingsView: View {
             reminderTime = ReflectionNotifier.storedReminderDate()
             refreshExport()
         }
-        .onChange(of: reflections.count) { _, _ in
+        .onChange(of: exportFingerprint) { _, _ in
             refreshExport()
         }
         .fileExporter(
@@ -111,6 +112,18 @@ struct SettingsView: View {
             contentType: UTType(filenameExtension: "md") ?? .plainText,
             defaultFilename: "Reflectime-Journal"
         ) { _ in }
+    }
+
+    private var exportFingerprint: Int {
+        var hasher = Hasher()
+        hasher.combine(reflections.count)
+        for item in reflections {
+            hasher.combine(item.objectID)
+            hasher.combine(item.name)
+            hasher.combine(item.note)
+            hasher.combine(item.cata)
+        }
+        return hasher.finalize()
     }
 
     private func refreshExport() {

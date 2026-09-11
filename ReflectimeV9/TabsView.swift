@@ -61,8 +61,13 @@ struct TabsView: View {
         .onAppear {
             drainPendingCompose()
         }
+        .onChange(of: showIntro) { _, showing in
+            if !showing {
+                drainPendingCompose()
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: ReflectimeRouter.compose)) { notification in
-            _ = ReflectimeRouter.consumePendingCompose()
+            guard !showIntro else { return }
             presentComposer(prompt: notification.object as? String)
             selectedTab = .journal
         }
@@ -76,14 +81,17 @@ struct TabsView: View {
     }
 
     private func presentComposer(prompt: String? = nil) {
+        _ = ReflectimeRouter.consumePendingCompose()
         composerPrompt = prompt
         showComposer = true
     }
 
     private func drainPendingCompose() {
+        guard !showIntro else { return }
         let pending = ReflectimeRouter.consumePendingCompose()
         guard pending.pending else { return }
-        presentComposer(prompt: pending.prompt)
+        composerPrompt = pending.prompt
+        showComposer = true
         selectedTab = .journal
     }
 }
