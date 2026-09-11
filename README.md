@@ -13,7 +13,9 @@ Version 3.0 targets **iOS 26** and is built with the **iOS 27 SDK**.
 - On-device Apple Intelligence summaries, tags, and follow-up prompts (never sent off-device)
 - App Intents / Shortcuts: “Log a reflection”, “Open today’s journal”
 - Daily reminder notifications, optional location, iCloud sync
-- Insights: writing streak, this week, category chart, day/category look-back
+- Insights: writing streak, heatmap, this week, category chart, day/category look-back
+- Timed writing sessions, today’s prompt, Markdown export, Spotlight search
+- TipKit coaching, ⌘N / ⌘F, `reflectime://new` deep link
 - Privacy manifest and no third-party analytics
 
 Existing iCloud reflections keep the same Core Data model. Category `Intrests` from earlier versions still displays as Interests.

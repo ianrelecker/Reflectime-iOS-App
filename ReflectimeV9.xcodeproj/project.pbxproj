@@ -32,6 +32,9 @@
 		F12700010000000100000006 /* ReflectimeIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000005 /* ReflectimeIntents.swift */; };
 		F12700010000000100000008 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000007 /* SearchView.swift */; };
 		F1270001000000010000000C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F1270001000000010000000B /* PrivacyInfo.xcprivacy */; };
+		F1270001000000010000000E /* JournalExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1270001000000010000000D /* JournalExport.swift */; };
+		F12700010000000100000010 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1270001000000010000000F /* SpotlightIndexer.swift */; };
+		F12700010000000100000012 /* ReflectimeTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000011 /* ReflectimeTips.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +66,9 @@
 		F12700010000000100000005 /* ReflectimeIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectimeIntents.swift; sourceTree = "<group>"; };
 		F12700010000000100000007 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		F1270001000000010000000B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F1270001000000010000000D /* JournalExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalExport.swift; sourceTree = "<group>"; };
+		F1270001000000010000000F /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
+		F12700010000000100000011 /* ReflectimeTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectimeTips.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +120,9 @@
 				F12700010000000100000001 /* ReflectionSupport.swift */,
 				F12700010000000100000003 /* ReflectionIntelligence.swift */,
 				F12700010000000100000005 /* ReflectimeIntents.swift */,
+				F1270001000000010000000D /* JournalExport.swift */,
+				F1270001000000010000000F /* SpotlightIndexer.swift */,
+				F12700010000000100000011 /* ReflectimeTips.swift */,
 				3C836979293BC3D70076FBBE /* dataController.swift */,
 				3CC3065C29330CA200E9C40E /* LocationHandler.swift */,
 				3C6371622933394B0082AB55 /* NotificationHandler.swift */,
@@ -231,6 +240,9 @@
 				F12700010000000100000004 /* ReflectionIntelligence.swift in Sources */,
 				F12700010000000100000006 /* ReflectimeIntents.swift in Sources */,
 				F12700010000000100000008 /* SearchView.swift in Sources */,
+				F1270001000000010000000E /* JournalExport.swift in Sources */,
+				F12700010000000100000010 /* SpotlightIndexer.swift in Sources */,
+				F12700010000000100000012 /* ReflectimeTips.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

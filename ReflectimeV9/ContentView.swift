@@ -1,5 +1,6 @@
 import CoreData
 import SwiftUI
+import TipKit
 
 struct ContentView: View {
     var onCompose: () -> Void = {}
@@ -14,6 +15,7 @@ struct ContentView: View {
     @State private var searchText = ""
     @State private var saveError: ReflectionStoreError?
     @State private var pendingDelete: Reflection?
+    @State private var deletePulse = 0
 
     private var filtered: [Reflection] {
         let items = Array(reflections)
@@ -49,6 +51,17 @@ struct ContentView: View {
                 }
             } else {
                 List {
+                    if searchText.isEmpty {
+                        Section {
+                            TodayPromptCard(
+                                wroteToday: ReflectionStats(reflections: Array(reflections)).wroteToday,
+                                prompt: todayPrompt,
+                                onWrite: onCompose
+                            )
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .listRowBackground(Color.clear)
+                        }
+                    }
                     ForEach(grouped, id: \.0) { category, items in
                         Section(category) {
                             ForEach(items, id: \.objectID) { reflection in
@@ -122,6 +135,14 @@ struct ContentView: View {
         }
         .reflectimeErrorAlert($saveError)
         .scrollEdgeEffectStyle(.soft, for: .top)
+        .sensoryFeedback(.warning, trigger: deletePulse)
+        .popoverTip(ComposeTip())
+    }
+
+    private var todayPrompt: String {
+        let day = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 0
+        let prompts = ReflectionDefaults.prompts
+        return prompts[day % prompts.count]
     }
 
     private func delete(_ reflection: Reflection) {
@@ -132,7 +153,29 @@ struct ContentView: View {
         } catch {
             saveError = .saveFailed(error.localizedDescription)
         }
+        deletePulse += 1
         pendingDelete = nil
+    }
+}
+
+private struct TodayPromptCard: View {
+    let wroteToday: Bool
+    let prompt: String
+    let onWrite: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(wroteToday ? "You already wrote today" : "Today’s prompt", systemImage: wroteToday ? "checkmark.circle" : "sun.max")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(prompt)
+                .font(.body)
+            Button(wroteToday ? "Write another" : "Write from this", action: onWrite)
+                .buttonStyle(.glassProminent)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 }
 
@@ -159,6 +202,9 @@ struct ReflectionRow: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
+                Text("\(reflection.wordCount) words")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
             }
             if reflection.hasLocation {
                 Image(systemName: "location.fill")
@@ -258,6 +304,7 @@ struct NoteDetail: View {
             .presentationDetents([.medium, .large])
         }
         .reflectimeErrorAlert($assistError)
+        .popoverTip(IntelligenceTip())
     }
 
     private func runAssist() async {

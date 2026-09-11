@@ -1,6 +1,7 @@
 import Charts
 import CoreData
 import SwiftUI
+import TipKit
 
 struct CalendarView: View {
     var onCompose: () -> Void = {}
@@ -38,6 +39,8 @@ struct CalendarView: View {
                 List {
                     Section("This stretch") {
                         InsightStrip(stats: stats)
+                        StreakHeatmap(days: stats.heatmap)
+                            .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
                         if stats.byCategory.contains(where: { $0.count > 0 }) {
                             Chart(stats.byCategory.filter { $0.count > 0 }, id: \.category) { item in
                                 BarMark(
@@ -50,6 +53,9 @@ struct CalendarView: View {
                             .frame(height: 160)
                             .accessibilityLabel("Reflections by category")
                         }
+                        LabeledContent("Longest streak", value: "\(stats.longestStreak) day\(stats.longestStreak == 1 ? "" : "s")")
+                        LabeledContent("Average length", value: "\(stats.averageWords) words")
+                        LabeledContent("Busiest day", value: stats.busiestWeekday)
                     }
 
                     Section("Look back") {
@@ -102,6 +108,7 @@ struct CalendarView: View {
             }
         }
         .scrollEdgeEffectStyle(.soft, for: .top)
+        .popoverTip(InsightsTip())
     }
 }
 
@@ -134,7 +141,37 @@ private struct InsightChip: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-                        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
+private struct StreakHeatmap: View {
+    let days: [DayCount]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Last 20 weeks")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: 20), spacing: 3) {
+                ForEach(days) { day in
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(color(for: day.count))
+                        .aspectRatio(1, contentMode: .fit)
+                        .accessibilityLabel("\(day.day.formatted(date: .abbreviated, time: .omitted)), \(day.count) reflection\(day.count == 1 ? "" : "s")")
+                }
+            }
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    private func color(for count: Int) -> Color {
+        switch count {
+        case 0: return Color.secondary.opacity(0.15)
+        case 1: return Color.accentColor.opacity(0.35)
+        case 2: return Color.accentColor.opacity(0.6)
+        default: return Color.accentColor
+        }
     }
 }
 

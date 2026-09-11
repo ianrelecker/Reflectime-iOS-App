@@ -30,6 +30,28 @@ struct OpenTodayIntent: AppIntent {
     }
 }
 
+struct ReflectionEntity: AppEntity {
+    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Reflection")
+    static var defaultQuery = ReflectionEntityQuery()
+
+    var id: UUID
+    var title: String
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(title)")
+    }
+}
+
+struct ReflectionEntityQuery: EntityQuery {
+    func entities(for identifiers: [UUID]) async throws -> [ReflectionEntity] {
+        []
+    }
+
+    func suggestedEntities() async throws -> [ReflectionEntity] {
+        []
+    }
+}
+
 struct ReflectimeShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(

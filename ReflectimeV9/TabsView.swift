@@ -45,7 +45,7 @@ struct TabsView: View {
         }
         .tabBarMinimizeBehavior(.onScrollDown)
         .tabViewStyle(.sidebarAdaptable)
-        .sheet(isPresented: $showComposer) {
+        .sheet(isPresented: $showComposer, onDismiss: { composerPrompt = nil }) {
             NavigationStack {
                 NoteAdd(initialPrompt: composerPrompt)
             }

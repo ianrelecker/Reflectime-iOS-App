@@ -144,40 +144,59 @@ extension Reflection {
         date ?? Date()
     }
 
-    var exportText: String {
+    var wordCount: Int {
+        bodyText.split { $0.isWhitespace || $0.isNewline }.filter { !$0.isEmpty }.count
+    }
+
+    var markdown: String {
         var lines = [
-            titleText,
+            "## \(titleText)",
+            "*\(createdAt.formatted(date: .complete, time: .shortened))* · \(categoryName)",
             "",
-            bodyText,
-            "",
-            createdAt.formatted(date: .complete, time: .shortened),
-            "Category: \(categoryName)"
+            bodyText
         ]
         if hasLocation {
-            lines.append("Location: \(lat), \(lon)")
+            lines.append("")
+            lines.append("Location: \(String(format: "%.4f", lat)), \(String(format: "%.4f", lon))")
         }
         return lines.joined(separator: "\n")
     }
+
+    var exportText: String {
+        markdown
+    }
+}
+
+struct DayCount: Identifiable, Hashable {
+    var id: Date { day }
+    let day: Date
+    let count: Int
 }
 
 struct ReflectionStats {
     let total: Int
     let located: Int
     let streak: Int
+    let longestStreak: Int
     let thisWeek: Int
+    let wroteToday: Bool
+    let averageWords: Int
+    let busiestWeekday: String
     let byCategory: [(category: String, count: Int)]
+    let heatmap: [DayCount]
 
-    init(reflections: [Reflection]) {
+    init(reflections: [Reflection], now: Date = Date(), calendar: Calendar = .current) {
         total = reflections.count
         located = reflections.filter(\.hasLocation).count
 
-        let calendar = Calendar.current
-        let startOfToday = calendar.startOfDay(for: Date())
+        let startOfToday = calendar.startOfDay(for: now)
         thisWeek = reflections.filter {
             calendar.dateComponents([.day], from: calendar.startOfDay(for: $0.createdAt), to: startOfToday).day ?? 0 < 7
         }.count
 
         let days = Set(reflections.map { calendar.startOfDay(for: $0.createdAt) })
+        wroteToday = days.contains(startOfToday)
+
         var streak = 0
         var cursor = startOfToday
         if !days.contains(cursor) {
@@ -190,12 +209,49 @@ struct ReflectionStats {
         }
         self.streak = streak
 
+        let orderedDays = days.sorted()
+        var longest = 0
+        var run = 0
+        var previousDay: Date?
+        for day in orderedDays {
+            if let previousDay, calendar.dateComponents([.day], from: previousDay, to: day).day == 1 {
+                run += 1
+            } else {
+                run = 1
+            }
+            longest = max(longest, run)
+            previousDay = day
+        }
+        longestStreak = longest
+
+        let words = reflections.map(\.wordCount)
+        averageWords = words.isEmpty ? 0 : words.reduce(0, +) / words.count
+
+        var weekdayCounts: [Int: Int] = [:]
+        for reflection in reflections {
+            let weekday = calendar.component(.weekday, from: reflection.createdAt)
+            weekdayCounts[weekday, default: 0] += 1
+        }
+        if let busiest = weekdayCounts.max(by: { $0.value < $1.value })?.key {
+            busiestWeekday = calendar.weekdaySymbols[(busiest - 1 + 7) % 7]
+        } else {
+            busiestWeekday = "—"
+        }
+
         var counts: [String: Int] = [:]
         for reflection in reflections {
             counts[reflection.categoryName, default: 0] += 1
         }
         byCategory = ReflectionCategory.allCases.map { category in
             (category.rawValue, counts[category.rawValue] ?? 0)
+        }
+
+        let perDay = Dictionary(grouping: reflections, by: { calendar.startOfDay(for: $0.createdAt) })
+            .mapValues(\.count)
+        let weeks = 20
+        heatmap = (0..<(weeks * 7)).reversed().compactMap { offset in
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: startOfToday) else { return nil }
+            return DayCount(day: day, count: perDay[day] ?? 0)
         }
     }
 }

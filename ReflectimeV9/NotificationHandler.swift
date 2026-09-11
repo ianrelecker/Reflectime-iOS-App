@@ -32,9 +32,10 @@ final class ReflectionNotifier {
 
         let content = UNMutableNotificationContent()
         content.title = "Reflectime"
-        content.body = "Now is the time to reflect."
+        content.body = Self.reminderBody()
         content.sound = .default
         content.badge = 1
+        content.userInfo = ["deepLink": "reflectime://new"]
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
         let request = UNNotificationRequest(
@@ -47,5 +48,14 @@ final class ReflectionNotifier {
 
     static func storedReminderDate() -> Date {
         (UserDefaults.standard.object(forKey: "Date") as? Date) ?? Date()
+    }
+
+    static func reminderBody() -> String {
+        let prompt = ReflectionDefaults.prompts.randomElement() ?? "Now is the time to reflect."
+        let firstLine = prompt.split(whereSeparator: \.isNewline).first.map(String.init) ?? prompt
+        if firstLine.count > 120 {
+            return "Now is the time to reflect."
+        }
+        return firstLine
     }
 }

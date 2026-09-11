@@ -42,6 +42,7 @@ final class DataController: ObservableObject {
         guard context.hasChanges else { return }
         do {
             try context.save()
+            SpotlightIndexer.reindex(context: context)
         } catch {
             context.rollback()
             throw ReflectionStoreError.saveFailed(error.localizedDescription)
@@ -49,6 +50,9 @@ final class DataController: ObservableObject {
     }
 
     func delete(_ object: NSManagedObject) throws {
+        if let reflection = object as? Reflection, let id = reflection.id {
+            SpotlightIndexer.remove(id: id)
+        }
         container.viewContext.delete(object)
         try save()
     }
