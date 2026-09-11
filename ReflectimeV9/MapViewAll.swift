@@ -1,175 +1,212 @@
-//
-//  MapViewAll.swift
-//  ReflectimeV9
-//
-//  Created by Ian Relecker on 12/19/22.
-//
-
-import SwiftUI
+import CoreData
 import MapKit
+import SwiftUI
 
-struct Location: Identifiable, Codable, Equatable{
+struct ReflectionPin: Identifiable, Hashable {
     let id: UUID
     let title: String
-    let data: String
-    let lat: Double
-    let lon: Double
-    var foc: Bool
+    let coordinate: CLLocationCoordinate2D
+    let objectID: NSManagedObjectID
+
+    static func == (lhs: ReflectionPin, rhs: ReflectionPin) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct MapViewAll: View {
-    @FetchRequest(sortDescriptors: []) var reflection: FetchedResults<Reflection>
-    @State private var arr = [Location]()
-    
-    
-    private let locationAdd = locationHandler()
-    
-    @State private var showname = 0.0
-    
-    @State private var textfoc = ""
-    @State private var indfoc = 0
-    
-    @State private var fake = ""
-    
-    
-    @State var userloc = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 50, longitude: 50), span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12))
-    
+    var onCompose: () -> Void = {}
+
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Reflection.date, ascending: false)]
+    ) private var reflections: FetchedResults<Reflection>
+    @EnvironmentObject private var location: LocationProvider
+
+    @State private var pins: [ReflectionPin] = []
+    @State private var focusIndex = 0
+    @State private var position: MapCameraPosition = .automatic
+    @State private var opened: Reflection?
+    @State private var showDetail = false
+
+    private var locatedCount: Int {
+        reflections.filter(\.hasLocation).count
+    }
+
+    private var pinSignature: Int {
+        var hasher = Hasher()
+        for reflection in reflections where reflection.hasLocation {
+            hasher.combine(reflection.id)
+            hasher.combine(reflection.lat)
+            hasher.combine(reflection.lon)
+            hasher.combine(reflection.name)
+        }
+        return hasher.finalize()
+    }
+
     var body: some View {
-        
-        
-        VStack{
-            if(arr.count >= 3){
-            HStack{
-                Spacer()
-                Text("Click through your reflections!")
-                    .fontWeight(.bold)
-                    .foregroundColor(Color("BW"))
-                    .dynamicTypeSize(.medium)
-                Spacer()
-                /*
-                Image(systemName: "chevron.left")
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .frame(width: 25, height: 25)
-                    .imageScale(.large)
-                 
-                Rectangle()
-                    .frame(width: 0, height: 1)
-                    .opacity(0)
-                 */
-                Image(systemName: "chevron.right")
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .frame(width: 25, height: 25)
-                    .imageScale(.large)
-                    .onTapGesture {
-                        getnextloc()
+        Group {
+            if locatedCount < 3 {
+                NotEnoughMapView(onCompose: onCompose)
+            } else {
+                Map(position: $position) {
+                    ForEach(pins) { pin in
+                        Annotation(pin.title, coordinate: pin.coordinate, anchor: .bottom) {
+                            Button {
+                                handlePinTap(pin)
+                            } label: {
+                                Image(systemName: isFocused(pin) ? "mappin.circle.fill" : "mappin.circle")
+                                    .font(.title)
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.white, isFocused(pin) ? Color.accentColor : Color.secondary)
+                                    .shadow(radius: 2)
+                            }
+                            .accessibilityLabel(pin.title)
+                            .accessibilityHint(isFocused(pin) ? "Opens this reflection" : "Zooms to this reflection")
+                        }
                     }
-                Rectangle()
-                    .frame(width: 35, height: 1)
-                    .opacity(0)
-            }
-                Map(coordinateRegion: $userloc, annotationItems: arr){ anno in
-                    MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: anno.lat, longitude: anno.lon)){
-                        VStack{
-                            Image(systemName: "mappin")
-                                .renderingMode(.original)
-                                .imageScale(.large)
-                            
-                            ZStack{
-                               
-                                if(anno.foc == true){
-                                    Text(anno.title)
-                                        .fontWeight(.medium)
-                                        .disabled(true)
-                                        .allowsHitTesting(false)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(Color(.black))
-                                        .padding(EdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3))
-                                        .background(Color(UIColor.systemGray3))
-                                        .cornerRadius(10)
-                                }
-                                
-                                    
-                               /*
-                                    Text(textfoc)
-                                        .foregroundColor(Color("WB"))
-                                        .dynamicTypeSize(.medium)
-                                        .disabled(true)
-                                        .allowsHitTesting(false)
-                                        .frame(height: 20, alignment: .center)
-                                */
-                            }//.background(Color("BW"))
-                            
-                            
-                            
+                    if let user = location.user {
+                        Annotation("You", coordinate: user.coordinate) {
+                            Image(systemName: "location.circle.fill")
+                                .font(.title2)
+                                .foregroundStyle(.white, Color.blue)
                         }
                     }
                 }
-            }else{
-                NotEnoughMapView()
-            }
-            //.ignoresSafeArea(edges: .top)
-        }
-        .onAppear{
-            getuserloc()
-            getallLoc()
-            getnextloc()
-        }
-        .onDisappear{
-            arr = [Location]()
-        }
-        
-    }
-    
-    func getnextloc(){
-        
-        if(indfoc == arr.count){
-            indfoc = 0
-        }
-        
-        /*
-        if(indfoc == 0){
-            arr[indfoc].foc = true
-        }else{
-            arr[indfoc-1].foc = false
-            arr[indfoc].foc = true
-        }
-         */
-        let hold = arr[indfoc]
-        if(indfoc != 0){
-            arr[indfoc-1].foc = false
-        }else{
-            arr[arr.count-1].foc = false
-        }
-        print(userloc)
-        print("\(indfoc) indfoc")
-        print("\(arr[indfoc].title) arr")
-        userloc = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: hold.lat, longitude: hold.lon), span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12))
-        print("After \(userloc)")
-        arr[indfoc].foc = true
-        indfoc = indfoc + 1
-        
-        
-        
-    }
-    
-    
-    func getallLoc(){
-        for ref in reflection{
-            let hold = Location(id: UUID(), title: ref.name ?? "Fail name", data: ref.note ?? "Fail note", lat: ref.lat, lon: ref.lon, foc: false)
-            if(ref.lat != 0.0){
-                arr.append(hold)
+                .mapStyle(.standard)
+                .safeAreaInset(edge: .top) {
+                    if let focused {
+                        HStack {
+                            Button {
+                                open(focused)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Places you’ve reflected")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Text(focused.title)
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+                                        .lineLimit(1)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityHint("Opens this reflection")
+                            Button("Next", systemImage: "chevron.right") {
+                                showNext()
+                            }
+                            .labelStyle(.iconOnly)
+                            .buttonStyle(.glass)
+                            .accessibilityLabel("Next reflection")
+                        }
+                        .padding(16)
+                        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                    }
+                }
             }
         }
+        .navigationTitle("Map")
+        .navigationDestination(isPresented: $showDetail) {
+            if let opened {
+                NoteDetail(reflection: opened)
+            }
+        }
+        .onAppear {
+            rebuildPins()
+            location.refresh()
+        }
+        .onChange(of: pinSignature) { _, _ in
+            rebuildPins()
+        }
     }
-    
-    func getuserloc(){
-        let hold = locationAdd.user?.coordinate
-        userloc = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: hold?.latitude ?? 50, longitude: hold?.longitude ?? 50), span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12))
+
+    private var focused: ReflectionPin? {
+        guard pins.indices.contains(focusIndex) else { return pins.first }
+        return pins[focusIndex]
+    }
+
+    private func isFocused(_ pin: ReflectionPin) -> Bool {
+        focused?.id == pin.id
+    }
+
+    private func handlePinTap(_ pin: ReflectionPin) {
+        if isFocused(pin) {
+            open(pin)
+            return
+        }
+        if let index = pins.firstIndex(where: { $0.id == pin.id }) {
+            focusIndex = index
+        }
+        withAnimation {
+            position = .region(
+                MKCoordinateRegion(
+                    center: pin.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.04, longitudeDelta: 0.04)
+                )
+            )
+        }
+    }
+
+    private func open(_ pin: ReflectionPin) {
+        if let match = reflections.first(where: { $0.objectID == pin.objectID }) {
+            opened = match
+            showDetail = true
+            return
+        }
+        if let match = reflections.first(where: { $0.id == pin.id }) {
+            opened = match
+            showDetail = true
+        }
+    }
+
+    private func rebuildPins() {
+        pins = reflections.compactMap { reflection in
+            guard reflection.hasLocation else { return nil }
+            return ReflectionPin(
+                id: reflection.id ?? UUID(),
+                title: reflection.titleText,
+                coordinate: reflection.coordinate,
+                objectID: reflection.objectID
+            )
+        }
+        if focusIndex >= pins.count {
+            focusIndex = 0
+        }
+        if let focused {
+            position = .region(
+                MKCoordinateRegion(
+                    center: focused.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.18, longitudeDelta: 0.18)
+                )
+            )
+        }
+    }
+
+    private func showNext() {
+        guard !pins.isEmpty else { return }
+        focusIndex = (focusIndex + 1) % pins.count
+        if let focused {
+            withAnimation {
+                position = .region(
+                    MKCoordinateRegion(
+                        center: focused.coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
+                    )
+                )
+            }
+        }
     }
 }
 
-struct MapViewAll_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    NavigationStack {
         MapViewAll()
     }
+    .environment(\.managedObjectContext, DataController(inMemory: true).container.viewContext)
+    .environmentObject(LocationProvider.shared)
 }

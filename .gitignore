@@ -1,3 +1,6 @@
-
+.DS_Store
+xcuserdata/
+DerivedData/
+*.xcuserstate
+build/
 Reflectime/
-ReflectimeV9/ReflectimeV9App.swift

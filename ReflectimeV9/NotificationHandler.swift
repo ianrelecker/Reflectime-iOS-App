@@ -1,100 +1,60 @@
-//
-//  NotificationHandler.swift
-//  ReflectimeV9
-//
-//  Adapted by Ian Relecker on 11/26/22 from https://youtu.be/mG9BVAs8AIo.
-//
-
-import SwiftUI
+import Foundation
 import UserNotifications
 
-class NotificationClass{
-    static let item = NotificationClass()
-    
-    func requestPermission(){
-        let options: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(options: options) {(sucess, error) in
-            if let error = error{
-                print("error \(error)")
-                //notificationStatus.setStatus(false)
-            }else{
-                //print("yes")
-                //notificationStatus.setStatus(true)
-            }
+@MainActor
+final class ReflectionNotifier {
+    static let shared = ReflectionNotifier()
+    static let reminderIdentifier = "reflectime.daily.reminder"
+
+    private init() {}
+
+    func requestPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+            UserDefaults.standard.set(granted, forKey: "authorized")
         }
     }
-    
-    
-    
-    func test(){
-        let content = UNMutableNotificationContent()
-        content.title = "Title Test"
-        content.subtitle = "Subtitle"
-        content.sound = .default
-        content.badge = 1
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
-        
-        let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
-            content: content,
-            trigger: trigger)
-       // UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        UNUserNotificationCenter.current().add(request)
-    }
-    
-    func schedule(dateInput: Date){
-        let active = true
-        
-        let hourI = Calendar.current.dateComponents([.hour], from: dateInput)
-        let minuteI = Calendar.current.dateComponents([.minute], from: dateInput)
-        var dateComponents = DateComponents()
-        dateComponents.hour = hourI.hour
-        dateComponents.minute = minuteI.minute
-        
-        let defaults = UserDefaults.standard
-        defaults.set(dateInput, forKey: "Date")
-        defaults.set(active, forKey: "authorized")
-        
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        
-        
+
+    func applySchedule(date: Date, enabled: Bool) {
+        UserDefaults.standard.set(date, forKey: "Date")
+        UserDefaults.standard.set(enabled, forKey: "sendNot")
+
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [Self.reminderIdentifier])
+
+        guard enabled else { return }
+
+        let hour = Calendar.current.component(.hour, from: date)
+        let minute = Calendar.current.component(.minute, from: date)
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+
         let content = UNMutableNotificationContent()
         content.title = "Reflectime"
-        content.subtitle = "Now Is The Time To Reflect."
+        content.body = Self.reminderBody()
         content.sound = .default
         content.badge = 1
-        
+        content.userInfo = ["deepLink": "reflectime://new"]
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
         let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
+            identifier: Self.reminderIdentifier,
             content: content,
-            trigger: trigger)
-        
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        UNUserNotificationCenter.current().add(request)
-        
-        if (defaults.bool(forKey: "sendNot") == false){
-            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        }
+            trigger: trigger
+        )
+        center.add(request)
     }
-}
 
-
-struct NotificationHandler: View {
-    var body: some View {
-        VStack{
-            
-            Button("Request Permission"){
-                NotificationClass.item.requestPermission()
-            }
-            
-            
-        }
+    static func storedReminderDate() -> Date {
+        (UserDefaults.standard.object(forKey: "Date") as? Date) ?? Date()
     }
-}
 
-struct NotificationHandler_Previews: PreviewProvider {
-    static var previews: some View {
-        NotificationHandler()
+    static func reminderBody() -> String {
+        let prompt = ReflectionDefaults.prompts.randomElement() ?? "Now is the time to reflect."
+        let firstLine = prompt.split(whereSeparator: \.isNewline).first.map(String.init) ?? prompt
+        if firstLine.count > 120 {
+            return "Now is the time to reflect."
+        }
+        return firstLine
     }
 }

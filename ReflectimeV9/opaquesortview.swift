@@ -1,51 +1,30 @@
-//
-//  opaquesortview.swift
-//  ReflectimeV9
-//
-//  Created by Ian Relecker on 12/21/22.
-//
-
+import CoreData
 import SwiftUI
 
 struct opaquesortview: View {
-    
-    @FetchRequest(sortDescriptors: []) var reflections: FetchedResults<Reflection>
-    
-    @Environment(\.dismiss) var dismiss
-    
-    @State private var showadd = false
-    
-    
+    var onCompose: () -> Void = {}
+
+    @FetchRequest(sortDescriptors: []) private var reflections: FetchedResults<Reflection>
+
+    private var remaining: Int {
+        max(0, 3 - reflections.count)
+    }
+
     var body: some View {
-        ZStack{
-            Image("opaqsort")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .blur(radius: 5)
-                .ignoresSafeArea()
-            Rectangle()
-                .frame(width: 350, height: 75, alignment: .center)
-                .foregroundColor(Color("WB"))
-                .cornerRadius(12)
-                .shadow(radius: 25)
-            Text("Not enough Reflections to reflect on.\nYou need \(3 - reflections.count) more Reflections to use sort.")
-                .foregroundColor(Color("BW"))
-                .multilineTextAlignment(.center)
-                .dynamicTypeSize(.medium)
-                .fontWeight(.bold)
-                
-            
-        }.onTapGesture {
-            showadd = true
-        }
-        .sheet(isPresented: $showadd){
-            NoteAdd()
+        ContentUnavailableView {
+            Label("Not enough to reflect on yet", systemImage: "sparkles")
+        } description: {
+            Text(remaining == 1
+                 ? "Write 1 more reflection to unlock insights, streaks, and look-back."
+                 : "Write \(remaining) more reflections to unlock insights, streaks, and look-back.")
+        } actions: {
+            Button("New Reflection", systemImage: "plus", action: onCompose)
+                .buttonStyle(.glassProminent)
         }
     }
 }
 
-struct opaquesortview_Previews: PreviewProvider {
-    static var previews: some View {
-        opaquesortview()
-    }
+#Preview {
+    opaquesortview()
+        .environment(\.managedObjectContext, DataController(inMemory: true).container.viewContext)
 }

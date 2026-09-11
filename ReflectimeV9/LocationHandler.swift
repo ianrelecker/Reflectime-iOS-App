@@ -1,39 +1,66 @@
-//
-//  LocationHandler.swift
-//  ReflectimeV9
-//
-//  Adapted by Ian Relecker on 11/26/22 from https://youtu.be/poSmKJ_spts.
-//
-
 import CoreLocation
+import Foundation
 
-class locationHandler: NSObject, ObservableObject {
-    private let handler = CLLocationManager()
-    @Published var user: CLLocation?
-    static let share = locationHandler()
-    
-    override init(){
+@MainActor
+final class LocationProvider: NSObject, ObservableObject {
+    static let shared = LocationProvider()
+
+    @Published private(set) var user: CLLocation?
+    @Published private(set) var authorization: CLAuthorizationStatus
+
+    private let manager = CLLocationManager()
+
+    var isAuthorized: Bool {
+        authorization == .authorizedWhenInUse || authorization == .authorizedAlways
+    }
+
+    override init() {
+        authorization = manager.authorizationStatus
         super.init()
-        handler.delegate = self
-        handler.desiredAccuracy = kCLLocationAccuracyBest
-        handler.startUpdatingLocation()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        if isAuthorized {
+            manager.requestLocation()
+        }
     }
-    
-    func request() {
-        handler.requestWhenInUseAuthorization()
+
+    func requestAccess() {
+        manager.requestWhenInUseAuthorization()
     }
-    
-    func getuser() -> (Double, Double){
-        
-        let latL = Double((user?.coordinate.latitude) ?? 0.0)
-        let lonL = Double((user?.coordinate.longitude) ?? 0.0)
-       
-        return (latL, lonL)
+
+    func refresh() {
+        guard isAuthorized else { return }
+        manager.requestLocation()
+    }
+
+    func coordinate() -> (Double, Double) {
+        let latitude = user?.coordinate.latitude ?? 0
+        let longitude = user?.coordinate.longitude ?? 0
+        return (latitude, longitude)
     }
 }
-extension locationHandler: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let locationM = locations.last else { return }
-        self.user = locationM
+
+extension LocationProvider: CLLocationManagerDelegate {
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        Task { @MainActor in
+            authorization = manager.authorizationStatus
+            if isAuthorized {
+                manager.requestLocation()
+            }
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        Task { @MainActor in
+            user = locations.last
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Task { @MainActor in
+            if user == nil {
+                user = manager.location
+            }
+        }
     }
 }

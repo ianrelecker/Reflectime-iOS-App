@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		3C1C43E5294E992A00A5EA0C /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1C43E4294E992A00A5EA0C /* PromptView.swift */; };
-		3C42CC3B293EE70A00EB94DE /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3C42CC3A293EE70A00EB94DE /* RevenueCat */; };
 		3C4A1414290E321E0043B395 /* ReflectimeV9App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */; };
 		3C4A1416290E321E0043B395 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1415290E321E0043B395 /* ContentView.swift */; };
 		3C4A1418290E321F0043B395 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A1417290E321F0043B395 /* Assets.xcassets */; };
 		3C4A141B290E321F0043B395 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A141A290E321F0043B395 /* Preview Assets.xcassets */; };
 		3C4A142A290E3A5F0043B395 /* NoteAdd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A1429290E3A5F0043B395 /* NoteAdd.swift */; };
-		3C62D52529443E3B001A028E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C42CC3D293EE72100EB94DE /* StoreKit.framework */; };
 		3C6371632933394B0082AB55 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6371622933394B0082AB55 /* NotificationHandler.swift */; };
 		3C836978293BC3680076FBBE /* Reflectime.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3C836976293BC3680076FBBE /* Reflectime.xcdatamodeld */; };
 		3C83697A293BC3D70076FBBE /* dataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C836979293BC3D70076FBBE /* dataController.swift */; };
@@ -29,12 +27,19 @@
 		3CE27F9B2943052100889F6B /* TabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE27F9A2943052100889F6B /* TabsView.swift */; };
 		3CE27F9D2943055300889F6B /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE27F9C2943055300889F6B /* CalendarView.swift */; };
 		3CFD696F293453CA009E04F9 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFD696E293453CA009E04F9 /* IntroView.swift */; };
+		F12700010000000100000002 /* ReflectionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000001 /* ReflectionSupport.swift */; };
+		F12700010000000100000004 /* ReflectionIntelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000003 /* ReflectionIntelligence.swift */; };
+		F12700010000000100000006 /* ReflectimeIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000005 /* ReflectimeIntents.swift */; };
+		F12700010000000100000008 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000007 /* SearchView.swift */; };
+		F1270001000000010000000C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F1270001000000010000000B /* PrivacyInfo.xcprivacy */; };
+		F1270001000000010000000E /* JournalExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1270001000000010000000D /* JournalExport.swift */; };
+		F12700010000000100000010 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1270001000000010000000F /* SpotlightIndexer.swift */; };
+		F12700010000000100000012 /* ReflectimeTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12700010000000100000011 /* ReflectimeTips.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3C1C43E4294E992A00A5EA0C /* PromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		3C3CB90E293D9B0400683C5C /* ReflectimeV9.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReflectimeV9.entitlements; sourceTree = "<group>"; };
-		3C42CC3D293EE72100EB94DE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		3C4A1410290E321E0043B395 /* ReflectimeV9.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReflectimeV9.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectimeV9App.swift; sourceTree = "<group>"; };
 		3C4A1415290E321E0043B395 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -56,6 +61,14 @@
 		3CE27F9A2943052100889F6B /* TabsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabsView.swift; sourceTree = "<group>"; };
 		3CE27F9C2943055300889F6B /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		3CFD696E293453CA009E04F9 /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
+		F12700010000000100000001 /* ReflectionSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectionSupport.swift; sourceTree = "<group>"; };
+		F12700010000000100000003 /* ReflectionIntelligence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectionIntelligence.swift; sourceTree = "<group>"; };
+		F12700010000000100000005 /* ReflectimeIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectimeIntents.swift; sourceTree = "<group>"; };
+		F12700010000000100000007 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		F1270001000000010000000B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F1270001000000010000000D /* JournalExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalExport.swift; sourceTree = "<group>"; };
+		F1270001000000010000000F /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
+		F12700010000000100000011 /* ReflectimeTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectimeTips.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,22 +76,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C42CC3B293EE70A00EB94DE /* RevenueCat in Frameworks */,
-				3C62D52529443E3B001A028E /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3C42CC3C293EE72100EB94DE /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				3C42CC3D293EE72100EB94DE /* StoreKit.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		3C4A1407290E321E0043B395 = {
 			isa = PBXGroup;
 			children = (
@@ -86,7 +89,6 @@
 				3C836976293BC3680076FBBE /* Reflectime.xcdatamodeld */,
 				3C4A1412290E321E0043B395 /* ReflectimeV9 */,
 				3C4A1411290E321E0043B395 /* Products */,
-				3C42CC3C293EE72100EB94DE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,24 +103,32 @@
 		3C4A1412290E321E0043B395 /* ReflectimeV9 */ = {
 			isa = PBXGroup;
 			children = (
-				3CD6ABDA2951599000E748C1 /* MapViewAll.swift */,
-				3CD6ABDC2954088C00E748C1 /* opaquesortview.swift */,
-				3CCDC7D729556F0D00547A5D /* NotEnoughMapView.swift */,
+				3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */,
+				3CE27F9A2943052100889F6B /* TabsView.swift */,
+				3C4A1415290E321E0043B395 /* ContentView.swift */,
+				3C4A1429290E3A5F0043B395 /* NoteAdd.swift */,
+				3C83697D293C42630076FBBE /* EditView.swift */,
+				3CE27F9C2943055300889F6B /* CalendarView.swift */,
+				F12700010000000100000007 /* SearchView.swift */,
 				3CAF6F9F2936FB7B005BF6AA /* MapView.swift */,
+				3CD6ABDA2951599000E748C1 /* MapViewAll.swift */,
+				3CCDC7D729556F0D00547A5D /* NotEnoughMapView.swift */,
+				3CD6ABDC2954088C00E748C1 /* opaquesortview.swift */,
+				3CC3065829330B5A00E9C40E /* SettingsView.swift */,
+				3CFD696E293453CA009E04F9 /* IntroView.swift */,
+				3C1C43E4294E992A00A5EA0C /* PromptView.swift */,
+				F12700010000000100000001 /* ReflectionSupport.swift */,
+				F12700010000000100000003 /* ReflectionIntelligence.swift */,
+				F12700010000000100000005 /* ReflectimeIntents.swift */,
+				F1270001000000010000000D /* JournalExport.swift */,
+				F1270001000000010000000F /* SpotlightIndexer.swift */,
+				F12700010000000100000011 /* ReflectimeTips.swift */,
+				3C836979293BC3D70076FBBE /* dataController.swift */,
+				3CC3065C29330CA200E9C40E /* LocationHandler.swift */,
+				3C6371622933394B0082AB55 /* NotificationHandler.swift */,
 				3C3CB90E293D9B0400683C5C /* ReflectimeV9.entitlements */,
 				3CAF6FA129370E1C005BF6AA /* Info.plist */,
-				3C83697D293C42630076FBBE /* EditView.swift */,
-				3CFD696E293453CA009E04F9 /* IntroView.swift */,
-				3CE27F9C2943055300889F6B /* CalendarView.swift */,
-				3C4A1429290E3A5F0043B395 /* NoteAdd.swift */,
-				3C836979293BC3D70076FBBE /* dataController.swift */,
-				3C4A1413290E321E0043B395 /* ReflectimeV9App.swift */,
-				3C4A1415290E321E0043B395 /* ContentView.swift */,
-				3C1C43E4294E992A00A5EA0C /* PromptView.swift */,
-				3CC3065829330B5A00E9C40E /* SettingsView.swift */,
-				3C6371622933394B0082AB55 /* NotificationHandler.swift */,
-				3CE27F9A2943052100889F6B /* TabsView.swift */,
-				3CC3065C29330CA200E9C40E /* LocationHandler.swift */,
+				F1270001000000010000000B /* PrivacyInfo.xcprivacy */,
 				3C4A1417290E321F0043B395 /* Assets.xcassets */,
 				3C4A1419290E321F0043B395 /* Preview Content */,
 			);
@@ -150,7 +160,6 @@
 			);
 			name = ReflectimeV9;
 			packageProductDependencies = (
-				3C42CC3A293EE70A00EB94DE /* RevenueCat */,
 			);
 			productName = ReflectimeV9;
 			productReference = 3C4A1410290E321E0043B395 /* ReflectimeV9.app */;
@@ -163,8 +172,8 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1400;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					3C4A140F290E321E0043B395 = {
 						CreatedOnToolsVersion = 14.0.1;
@@ -181,7 +190,6 @@
 			);
 			mainGroup = 3C4A1407290E321E0043B395;
 			packageReferences = (
-				3C42CC39293EE70A00EB94DE /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			productRefGroup = 3C4A1411290E321E0043B395 /* Products */;
 			projectDirPath = "";
@@ -200,6 +208,7 @@
 				3CC306512932FBB900E9C40E /* Launch Screen.storyboard in Resources */,
 				3C4A141B290E321F0043B395 /* Preview Assets.xcassets in Resources */,
 				3C4A1418290E321F0043B395 /* Assets.xcassets in Resources */,
+				F1270001000000010000000C /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +236,13 @@
 				3CD6ABDB2951599000E748C1 /* MapViewAll.swift in Sources */,
 				3C83697A293BC3D70076FBBE /* dataController.swift in Sources */,
 				3C836978293BC3680076FBBE /* Reflectime.xcdatamodeld in Sources */,
+				F12700010000000100000002 /* ReflectionSupport.swift in Sources */,
+				F12700010000000100000004 /* ReflectionIntelligence.swift in Sources */,
+				F12700010000000100000006 /* ReflectimeIntents.swift in Sources */,
+				F12700010000000100000008 /* SearchView.swift in Sources */,
+				F1270001000000010000000E /* JournalExport.swift in Sources */,
+				F12700010000000100000010 /* SpotlightIndexer.swift in Sources */,
+				F12700010000000100000012 /* ReflectimeTips.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +253,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -269,7 +286,8 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -283,12 +301,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -297,6 +316,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -329,7 +349,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -337,12 +358,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -361,18 +382,21 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReflectimeV9/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reflectime;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is only stored on device and kept private to you. No one else but you can see it. Your location data is used to display on the Map on a reflection where it is enabled.";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is stored only with a reflection when you choose to include it. It stays on your devices and in your iCloud account.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "Reflectime sends an optional daily reminder at the time you pick so you can write a reflection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.8;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Capstone.ReflectimeV9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -398,18 +422,21 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReflectimeV9/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reflectime;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location data is only stored on device and kept private to you. No one else but you can see it. Your location data is used to display on the Map on a reflection where it is enabled.";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is stored only with a reflection when you choose to include it. It stays on your devices and in your iCloud account.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "Reflectime sends an optional daily reminder at the time you pick so you can write a reflection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.8;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Capstone.ReflectimeV9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -443,25 +470,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		3C42CC39293EE70A00EB94DE /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		3C42CC3A293EE70A00EB94DE /* RevenueCat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3C42CC39293EE70A00EB94DE /* XCRemoteSwiftPackageReference "purchases-ios" */;
-			productName = RevenueCat;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		3C836976293BC3680076FBBE /* Reflectime.xcdatamodeld */ = {
