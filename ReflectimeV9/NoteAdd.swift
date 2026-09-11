@@ -140,7 +140,6 @@ struct NoteAdd: View {
             if timedSession {
                 sessionEnd = Date().addingTimeInterval(TimeInterval(sessionMinutes * 60))
             }
-            focusedField = .title
         }
         .onChange(of: timedSession) { _, enabled in
             if enabled {
