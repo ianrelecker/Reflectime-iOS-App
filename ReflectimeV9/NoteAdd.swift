@@ -22,8 +22,7 @@ struct NoteAdd: View {
     @State private var idea = ""
     @State private var saveError: ReflectionStoreError?
     @State private var confirmCancel = false
-    @State private var focusMode = false
-    @State private var timedSession = false
+    @State private var timedSession = true
     @State private var sessionEnd = Date()
     @State private var savePulse = 0
     @FocusState private var focusedField: Field?
@@ -49,7 +48,26 @@ struct NoteAdd: View {
 
     var body: some View {
         Form {
-            if showPrompts && !focusMode {
+            Section {
+                Toggle("Writing timer", isOn: $timedSession)
+                if timedSession {
+                    sessionLabel
+                    Picker("Length", selection: $sessionMinutes) {
+                        Text("5 min").tag(5)
+                        Text("10 min").tag(10)
+                        Text("15 min").tag(15)
+                        Text("25 min").tag(25)
+                    }
+                    .pickerStyle(.segmented)
+                    .accessibilityLabel("Timer length")
+                }
+            } header: {
+                Text("Timer")
+            } footer: {
+                Text("A quiet countdown while you write. Turn it off if you don’t want one.")
+            }
+
+            if showPrompts {
                 Section("Prompt") {
                     Text(idea.isEmpty ? "Shuffle for a prompt." : idea)
                         .fontWeight(.light)
@@ -66,49 +84,27 @@ struct NoteAdd: View {
                 TextField("Title", text: $name)
                     .focused($focusedField, equals: .title)
                 TextEditor(text: $bodyText)
-                    .frame(minHeight: focusMode ? 280 : 160)
+                    .frame(minHeight: 180)
                     .focused($focusedField, equals: .body)
                     .accessibilityLabel("Your thoughts")
-                HStack {
-                    Text("\(wordCount) word\(wordCount == 1 ? "" : "s")")
-                    Spacer()
-                    if timedSession {
-                        sessionLabel
-                    }
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                Text("\(wordCount) word\(wordCount == 1 ? "" : "s")")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
-            if !focusMode {
-                Section("Details") {
-                    Picker("Category", selection: $category) {
-                        ForEach(ReflectionCategory.allCases) { item in
-                            Label(item.rawValue, systemImage: item.symbolName)
-                                .tag(item.rawValue)
-                        }
-                    }
-
-                    if location.isAuthorized {
-                        Toggle("Include my location", isOn: $includeLocation)
-                    } else {
-                        Text("Turn on Location in Settings if you want to remember where this was written.")
-                            .foregroundStyle(.secondary)
+            Section("Details") {
+                Picker("Category", selection: $category) {
+                    ForEach(ReflectionCategory.allCases) { item in
+                        Label(item.rawValue, systemImage: item.symbolName)
+                            .tag(item.rawValue)
                     }
                 }
 
-                Section("Focus") {
-                    Toggle("Timed writing session", isOn: $timedSession)
-                    if timedSession {
-                        Picker("Length", selection: $sessionMinutes) {
-                            Text("5 min").tag(5)
-                            Text("10 min").tag(10)
-                            Text("15 min").tag(15)
-                            Text("25 min").tag(25)
-                        }
-                        .pickerStyle(.segmented)
-                    }
-                    Toggle("Hide extra chrome", isOn: $focusMode)
+                if location.isAuthorized {
+                    Toggle("Include my location", isOn: $includeLocation)
+                } else {
+                    Text("Turn on Location in Settings if you want to remember where this was written.")
+                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -141,6 +137,9 @@ struct NoteAdd: View {
             if location.isAuthorized {
                 location.refresh()
             }
+            if timedSession {
+                sessionEnd = Date().addingTimeInterval(TimeInterval(sessionMinutes * 60))
+            }
             focusedField = .title
         }
         .onChange(of: timedSession) { _, enabled in
@@ -161,15 +160,16 @@ struct NoteAdd: View {
         .reflectimeErrorAlert($saveError)
     }
 
-    @ViewBuilder
     private var sessionLabel: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             let remaining = max(0, sessionEnd.timeIntervalSince(context.date))
             let minutes = Int(remaining) / 60
             let seconds = Int(remaining) % 60
-            Text(remaining == 0 ? "Session done" : String(format: "%d:%02d left", minutes, seconds))
-                .monospacedDigit()
-                .foregroundStyle(remaining == 0 ? .orange : .secondary)
+            Text(remaining == 0 ? "Time’s up" : String(format: "%d:%02d", minutes, seconds))
+                .font(.largeTitle.monospacedDigit().weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(remaining == 0 ? Color.orange : Color.primary)
+                .accessibilityLabel(remaining == 0 ? "Session done" : "\(minutes) minutes \(seconds) seconds left")
         }
     }
 

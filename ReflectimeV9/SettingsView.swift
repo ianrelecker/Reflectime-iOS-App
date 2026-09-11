@@ -74,13 +74,13 @@ struct SettingsView: View {
             }
 
             Section("Support") {
-                if let url = URL(string: "https://www.ianrelecker.com/reflectime-app/privacy-policy") {
+                if let url = URL(string: "https://relecker.com/privacy") {
                     Link("Privacy Policy", destination: url)
                 }
                 if let url = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/") {
                     Link("EULA", destination: url)
                 }
-                if let url = URL(string: "https://www.ianrelecker.com/contact") {
+                if let url = URL(string: "https://relecker.com/contact") {
                     Link("Contact", destination: url)
                 }
             }
