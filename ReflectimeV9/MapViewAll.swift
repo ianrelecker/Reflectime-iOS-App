@@ -38,7 +38,7 @@ struct MapViewAll: View {
                 Map(position: $position) {
                     ForEach(pins) { pin in
                         Marker(pin.title, coordinate: pin.coordinate)
-                            .tint(pins.indices.contains(focusIndex) && pins[focusIndex].id == pin.id ? .accentColor : .secondary)
+                            .tint(pins.indices.contains(focusIndex) && pins[focusIndex].id == pin.id ? Color.accentColor : Color.secondary)
                     }
                     if let user = location.user {
                         Marker("You", systemImage: "location.fill", coordinate: user.coordinate)

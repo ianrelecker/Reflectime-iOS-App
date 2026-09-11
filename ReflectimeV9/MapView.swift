@@ -41,7 +41,7 @@ struct MapView: View {
     var body: some View {
         Map(position: $position) {
             Marker("Reflection", coordinate: place.location)
-                .tint(.accentColor)
+                .tint(Color.accentColor)
         }
         .mapStyle(.standard)
         .frame(height: 180)

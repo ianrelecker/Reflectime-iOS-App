@@ -53,7 +53,7 @@ struct SettingsView: View {
                 }
             }
 
-            Section("Privacy") {
+            Section {
                 LabeledContent("Location") {
                     Text(location.isAuthorized ? "On" : "Off")
                         .foregroundStyle(.secondary)
@@ -64,6 +64,8 @@ struct SettingsView: View {
                 Button("Request notification access") {
                     ReflectionNotifier.shared.requestPermission()
                 }
+            } header: {
+                Text("Privacy")
             } footer: {
                 Text("Location is only stored with a reflection when you choose to include it. Notifications are a daily nudge to write. If a prompt doesn’t appear, open Settings → Reflectime and grant access there.")
             }
