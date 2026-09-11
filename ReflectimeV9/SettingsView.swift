@@ -1,5 +1,6 @@
 import CoreData
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @EnvironmentObject private var location: LocationProvider
@@ -13,6 +14,7 @@ struct SettingsView: View {
     @AppStorage("sessionMinutes") private var sessionMinutes = 10
     @State private var reminderTime = ReflectionNotifier.storedReminderDate()
     @State private var showExport = false
+    @State private var exportText = ""
 
     var body: some View {
         Form {
@@ -41,7 +43,7 @@ struct SettingsView: View {
                 }
                 .disabled(reflections.isEmpty)
                 ShareLink(
-                    item: JournalMarkdownDocument.markdown(from: Array(reflections)),
+                    item: exportText,
                     subject: Text("Reflectime journal"),
                     message: Text("A private export of my reflections.")
                 ) {
@@ -98,13 +100,21 @@ struct SettingsView: View {
         }
         .onAppear {
             reminderTime = ReflectionNotifier.storedReminderDate()
+            refreshExport()
+        }
+        .onChange(of: reflections.count) { _, _ in
+            refreshExport()
         }
         .fileExporter(
             isPresented: $showExport,
-            document: JournalMarkdownDocument(text: JournalMarkdownDocument.markdown(from: Array(reflections))),
-            contentType: .plainText,
+            document: JournalMarkdownDocument(text: exportText),
+            contentType: UTType(filenameExtension: "md") ?? .plainText,
             defaultFilename: "Reflectime-Journal"
         ) { _ in }
+    }
+
+    private func refreshExport() {
+        exportText = JournalMarkdownDocument.markdown(from: Array(reflections))
     }
 }
 

@@ -17,6 +17,8 @@ struct ReflectionPin: Identifiable, Hashable {
 }
 
 struct MapViewAll: View {
+    var onCompose: () -> Void = {}
+
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Reflection.date, ascending: false)]
     ) private var reflections: FetchedResults<Reflection>
@@ -30,10 +32,21 @@ struct MapViewAll: View {
         reflections.filter(\.hasLocation).count
     }
 
+    private var pinSignature: Int {
+        var hasher = Hasher()
+        for reflection in reflections where reflection.hasLocation {
+            hasher.combine(reflection.id)
+            hasher.combine(reflection.lat)
+            hasher.combine(reflection.lon)
+            hasher.combine(reflection.name)
+        }
+        return hasher.finalize()
+    }
+
     var body: some View {
         Group {
             if locatedCount < 3 {
-                NotEnoughMapView()
+                NotEnoughMapView(onCompose: onCompose)
             } else {
                 Map(position: $position) {
                     ForEach(pins) { pin in
@@ -78,7 +91,7 @@ struct MapViewAll: View {
             rebuildPins()
             location.refresh()
         }
-        .onChange(of: reflections.count) { _, _ in
+        .onChange(of: pinSignature) { _, _ in
             rebuildPins()
         }
     }

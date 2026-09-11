@@ -3,7 +3,7 @@ import SwiftUI
 import TipKit
 
 struct ContentView: View {
-    var onCompose: () -> Void = {}
+    var onCompose: (String?) -> Void = { _ in }
 
     @Environment(\.managedObjectContext) private var moc
     @EnvironmentObject private var dataController: DataController
@@ -45,7 +45,7 @@ struct ContentView: View {
                     Text("Write your first one. It’s private, on this device, and synced with iCloud when you’re signed in.")
                 } actions: {
                     Button("New Reflection", systemImage: "plus") {
-                        onCompose()
+                        onCompose(nil)
                     }
                     .buttonStyle(.glassProminent)
                 }
@@ -54,9 +54,9 @@ struct ContentView: View {
                     if searchText.isEmpty {
                         Section {
                             TodayPromptCard(
-                                wroteToday: ReflectionStats(reflections: Array(reflections)).wroteToday,
+                                wroteToday: reflections.contains { Calendar.current.isDateInToday($0.createdAt) },
                                 prompt: todayPrompt,
-                                onWrite: onCompose
+                                onWrite: { onCompose(todayPrompt) }
                             )
                             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                             .listRowBackground(Color.clear)
@@ -87,7 +87,7 @@ struct ContentView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("New Reflection", systemImage: "plus") {
-                    onCompose()
+                    onCompose(nil)
                 }
             }
             ToolbarSpacer(.fixed)
@@ -102,7 +102,7 @@ struct ContentView: View {
         }
         .safeAreaInset(edge: .bottom, alignment: .trailing) {
             if !reflections.isEmpty {
-                Button(action: onCompose) {
+                Button(action: { onCompose(nil) }) {
                     Label("New Reflection", systemImage: "plus")
                         .font(.headline)
                         .padding(.horizontal, 18)
@@ -305,6 +305,9 @@ struct NoteDetail: View {
         }
         .reflectimeErrorAlert($assistError)
         .popoverTip(IntelligenceTip())
+        .onAppear {
+            intelligence.refreshAvailability()
+        }
     }
 
     private func runAssist() async {

@@ -2,7 +2,9 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct JournalMarkdownDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.plainText, .text] }
+    static var readableContentTypes: [UTType] {
+        [UTType(filenameExtension: "md") ?? .plainText, .plainText, .text]
+    }
 
     var text: String
 

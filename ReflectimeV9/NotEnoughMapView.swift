@@ -2,6 +2,8 @@ import CoreData
 import SwiftUI
 
 struct NotEnoughMapView: View {
+    var onCompose: () -> Void = {}
+
     @FetchRequest(sortDescriptors: []) private var reflections: FetchedResults<Reflection>
 
     private var remaining: Int {
@@ -15,6 +17,9 @@ struct NotEnoughMapView: View {
             Text(remaining == 1
                  ? "Add location to 1 more reflection to see them on a map."
                  : "Add location to \(remaining) more reflections to see them on a map.")
+        } actions: {
+            Button("New Reflection", systemImage: "plus", action: onCompose)
+                .buttonStyle(.glassProminent)
         }
     }
 }

@@ -40,9 +40,18 @@ final class DataController: ObservableObject {
     func save() throws {
         let context = container.viewContext
         guard context.hasChanges else { return }
+
+        let changed = context.insertedObjects.union(context.updatedObjects).compactMap { $0 as? Reflection }
+        let deletedIDs = context.deletedObjects.compactMap { ($0 as? Reflection)?.id }
+
         do {
             try context.save()
-            SpotlightIndexer.reindex(context: context)
+            for id in deletedIDs {
+                SpotlightIndexer.remove(id: id)
+            }
+            for reflection in changed {
+                SpotlightIndexer.index(reflection)
+            }
         } catch {
             context.rollback()
             throw ReflectionStoreError.saveFailed(error.localizedDescription)
@@ -50,9 +59,6 @@ final class DataController: ObservableObject {
     }
 
     func delete(_ object: NSManagedObject) throws {
-        if let reflection = object as? Reflection, let id = reflection.id {
-            SpotlightIndexer.remove(id: id)
-        }
         container.viewContext.delete(object)
         try save()
     }

@@ -8,7 +8,7 @@ struct IntroView: View {
     @AppStorage("showIntro") private var showIntro = true
     @AppStorage("showP") private var showPrompts = true
     @AppStorage("sendNot") private var sendNotifications = true
-    @State private var reminderTime = Date()
+    @State private var reminderTime = ReflectionNotifier.storedReminderDate()
     @State private var seedError: ReflectionStoreError?
 
     var body: some View {
@@ -34,7 +34,6 @@ struct IntroView: View {
                 DatePicker("Remind me at", selection: $reminderTime, displayedComponents: .hourAndMinute)
                 Button("Allow notifications") {
                     ReflectionNotifier.shared.requestPermission()
-                    sendNotifications = true
                 }
             }
         }
@@ -50,9 +49,8 @@ struct IntroView: View {
             }
         }
         .onAppear {
-            showPrompts = true
-            sendNotifications = true
             seedPrompts()
+            reminderTime = ReflectionNotifier.storedReminderDate()
         }
         .reflectimeErrorAlert($seedError)
     }

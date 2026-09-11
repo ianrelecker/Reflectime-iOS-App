@@ -11,23 +11,23 @@ final class ReflectionIntelligence: ObservableObject {
     static let shared = ReflectionIntelligence()
 
     @Published private(set) var isRunning = false
+    @Published private(set) var isAvailable = false
+    @Published private(set) var availabilityMessage: String? = "On-device insights need iOS 26 or later."
 
-    var isAvailable: Bool {
-        #if canImport(FoundationModels)
-        if #available(iOS 26.0, *) {
-            return FoundationModelBridge.isAvailable
-        }
-        #endif
-        return false
+    init() {
+        refreshAvailability()
     }
 
-    var availabilityMessage: String? {
+    func refreshAvailability() {
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *) {
-            return FoundationModelBridge.availabilityMessage
+            isAvailable = FoundationModelBridge.isAvailable
+            availabilityMessage = FoundationModelBridge.availabilityMessage
+            return
         }
         #endif
-        return "On-device insights need iOS 26 or later."
+        isAvailable = false
+        availabilityMessage = "On-device insights need iOS 26 or later."
     }
 
     func assist(on entry: String) async throws -> ReflectionAssist {

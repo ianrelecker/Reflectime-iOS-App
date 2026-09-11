@@ -116,6 +116,38 @@ enum ReflectionDefaults {
 enum ReflectimeRouter {
     static let compose = Notification.Name("ReflectimeCompose")
     static let search = Notification.Name("ReflectimeSearch")
+    static let journal = Notification.Name("ReflectimeJournal")
+
+    private static let pendingComposeKey = "ReflectimePendingCompose"
+    private static let pendingPromptKey = "ReflectimePendingComposePrompt"
+
+    static func requestCompose(prompt: String? = nil) {
+        UserDefaults.standard.set(true, forKey: pendingComposeKey)
+        if let prompt, !prompt.isEmpty {
+            UserDefaults.standard.set(prompt, forKey: pendingPromptKey)
+        } else {
+            UserDefaults.standard.removeObject(forKey: pendingPromptKey)
+        }
+        NotificationCenter.default.post(name: compose, object: prompt)
+    }
+
+    static func requestJournal() {
+        NotificationCenter.default.post(name: journal, object: nil)
+    }
+
+    static func requestSearch() {
+        NotificationCenter.default.post(name: search, object: nil)
+    }
+
+    static func consumePendingCompose() -> (pending: Bool, prompt: String?) {
+        guard UserDefaults.standard.bool(forKey: pendingComposeKey) else {
+            return (false, nil)
+        }
+        let prompt = UserDefaults.standard.string(forKey: pendingPromptKey)
+        UserDefaults.standard.set(false, forKey: pendingComposeKey)
+        UserDefaults.standard.removeObject(forKey: pendingPromptKey)
+        return (true, prompt)
+    }
 }
 
 extension Reflection {

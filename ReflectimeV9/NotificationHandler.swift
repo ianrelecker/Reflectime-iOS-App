@@ -20,7 +20,6 @@ final class ReflectionNotifier {
 
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [Self.reminderIdentifier])
-        center.removeAllPendingNotificationRequests()
 
         guard enabled else { return }
 

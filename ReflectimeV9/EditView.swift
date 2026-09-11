@@ -6,11 +6,12 @@ struct EditView: View {
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var dataController: DataController
+    @EnvironmentObject private var location: LocationProvider
 
     @State private var name = ""
     @State private var note = ""
     @State private var category = ReflectionCategory.general.rawValue
-    @State private var keepLocation = true
+    @State private var includeLocation = false
     @State private var saveError: ReflectionStoreError?
 
     private var canSave: Bool {
@@ -33,8 +34,11 @@ struct EditView: View {
                             .tag(item.rawValue)
                     }
                 }
-                if reflection.hasLocation || keepLocation {
-                    Toggle("Keep location on this reflection", isOn: $keepLocation)
+                if location.isAuthorized || reflection.hasLocation {
+                    Toggle(
+                        reflection.hasLocation ? "Keep location on this reflection" : "Add current location",
+                        isOn: $includeLocation
+                    )
                 }
             }
         }
@@ -54,7 +58,10 @@ struct EditView: View {
             name = reflection.name ?? ""
             note = reflection.note ?? ""
             category = ReflectionCategory.displayName(for: reflection.cata)
-            keepLocation = reflection.hasLocation
+            includeLocation = reflection.hasLocation
+            if location.isAuthorized {
+                location.refresh()
+            }
         }
         .reflectimeErrorAlert($saveError)
     }
@@ -74,7 +81,13 @@ struct EditView: View {
         reflection.name = title
         reflection.note = thought
         reflection.cata = category
-        if !keepLocation {
+        if includeLocation {
+            if !reflection.hasLocation, location.isAuthorized {
+                let coordinate = location.coordinate()
+                reflection.lat = coordinate.0
+                reflection.lon = coordinate.1
+            }
+        } else {
             reflection.lat = 0
             reflection.lon = 0
         }

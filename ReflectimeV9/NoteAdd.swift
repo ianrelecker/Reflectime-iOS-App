@@ -213,10 +213,8 @@ struct NoteAdd: View {
             savePulse += 1
             dismiss()
         } catch let error as ReflectionStoreError {
-            moc.delete(reflection)
             saveError = error
         } catch {
-            moc.delete(reflection)
             saveError = .saveFailed(error.localizedDescription)
         }
     }

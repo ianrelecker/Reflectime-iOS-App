@@ -4,7 +4,7 @@ import SwiftUI
 import TipKit
 
 struct CalendarView: View {
-    var onCompose: () -> Void = {}
+    var onCompose: (String?) -> Void = { _ in }
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Reflection.date, ascending: false)],
@@ -27,14 +27,11 @@ struct CalendarView: View {
         }
     }
 
-    private var stats: ReflectionStats {
-        ReflectionStats(reflections: Array(reflections))
-    }
-
     var body: some View {
+        let stats = ReflectionStats(reflections: Array(reflections))
         Group {
             if reflections.count < 3 {
-                opaquesortview(onCompose: onCompose)
+                opaquesortview(onCompose: { onCompose(nil) })
             } else {
                 List {
                     Section("This stretch") {
@@ -80,18 +77,23 @@ struct CalendarView: View {
                                     NoteDetail(reflection: reflection)
                                 } label: {
                                     VStack(alignment: .leading, spacing: 6) {
-                                        Text(reflection.titleText)
-                                            .font(.headline)
+                                        HStack {
+                                            Text(reflection.titleText)
+                                                .font(.headline)
+                                            Spacer()
+                                            if reflection.hasLocation {
+                                                Image(systemName: "location.fill")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.tertiary)
+                                                    .accessibilityLabel("Includes location")
+                                            }
+                                        }
                                         Text(reflection.createdAt.formatted(date: .long, time: .omitted))
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
                                         Text(reflection.bodyText)
                                             .font(.body)
                                             .lineLimit(6)
-                                        if reflection.hasLocation {
-                                            MapView(place: IdentifiablePlace(id: reflection.id ?? UUID(), lat: reflection.lat, lon: reflection.lon))
-                                                .allowsHitTesting(false)
-                                        }
                                     }
                                     .padding(.vertical, 4)
                                 }
@@ -104,7 +106,9 @@ struct CalendarView: View {
         .navigationTitle("Reflect")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("New Reflection", systemImage: "plus", action: onCompose)
+                Button("New Reflection", systemImage: "plus") {
+                    onCompose(nil)
+                }
             }
         }
         .scrollEdgeEffectStyle(.soft, for: .top)
@@ -148,19 +152,33 @@ private struct InsightChip: View {
 private struct StreakHeatmap: View {
     let days: [DayCount]
 
+    private var cells: [DayCount?] {
+        guard let first = days.first else { return [] }
+        let weekday = Calendar.current.component(.weekday, from: first.day)
+        let leading = max(0, weekday - 1)
+        return Array(repeating: nil, count: leading) + days.map { Optional($0) }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Last 20 weeks")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: 20), spacing: 3) {
-                ForEach(days) { day in
+            LazyHGrid(
+                rows: Array(repeating: GridItem(.fixed(10), spacing: 3), count: 7),
+                spacing: 3
+            ) {
+                ForEach(Array(cells.enumerated()), id: \.offset) { _, day in
                     RoundedRectangle(cornerRadius: 2, style: .continuous)
-                        .fill(color(for: day.count))
-                        .aspectRatio(1, contentMode: .fit)
-                        .accessibilityLabel("\(day.day.formatted(date: .abbreviated, time: .omitted)), \(day.count) reflection\(day.count == 1 ? "" : "s")")
+                        .fill(color(for: day?.count ?? 0))
+                        .frame(width: 10, height: 10)
+                        .opacity(day == nil ? 0 : 1)
+                        .accessibilityLabel(day.map {
+                            "\($0.day.formatted(date: .abbreviated, time: .omitted)), \($0.count) reflection\($0.count == 1 ? "" : "s")"
+                        } ?? "Empty")
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .contain)
     }

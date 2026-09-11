@@ -19,17 +19,17 @@ struct TabsView: View {
         TabView(selection: $selectedTab) {
             Tab("Journal", systemImage: "book.pages", value: .journal) {
                 NavigationStack {
-                    ContentView(onCompose: { presentComposer() })
+                    ContentView(onCompose: { presentComposer(prompt: $0) })
                 }
             }
             Tab("Reflect", systemImage: "sparkles", value: .reflect) {
                 NavigationStack {
-                    CalendarView(onCompose: { presentComposer() })
+                    CalendarView(onCompose: { presentComposer(prompt: $0) })
                 }
             }
             Tab("Map", systemImage: "map", value: .map) {
                 NavigationStack {
-                    MapViewAll()
+                    MapViewAll(onCompose: { presentComposer() })
                 }
             }
             Tab("Settings", systemImage: "gearshape", value: .settings) {
@@ -58,13 +58,19 @@ struct TabsView: View {
             .interactiveDismissDisabled(true)
             .presentationDetents([.large])
         }
+        .onAppear {
+            drainPendingCompose()
+        }
         .onReceive(NotificationCenter.default.publisher(for: ReflectimeRouter.compose)) { notification in
-            composerPrompt = notification.object as? String
-            showComposer = true
+            _ = ReflectimeRouter.consumePendingCompose()
+            presentComposer(prompt: notification.object as? String)
             selectedTab = .journal
         }
         .onReceive(NotificationCenter.default.publisher(for: ReflectimeRouter.search)) { _ in
             selectedTab = .search
+        }
+        .onReceive(NotificationCenter.default.publisher(for: ReflectimeRouter.journal)) { _ in
+            selectedTab = .journal
         }
         .reflectimeErrorAlert($dataController.storeError)
     }
@@ -72,6 +78,13 @@ struct TabsView: View {
     private func presentComposer(prompt: String? = nil) {
         composerPrompt = prompt
         showComposer = true
+    }
+
+    private func drainPendingCompose() {
+        let pending = ReflectimeRouter.consumePendingCompose()
+        guard pending.pending else { return }
+        presentComposer(prompt: pending.prompt)
+        selectedTab = .journal
     }
 }
 
