@@ -12,24 +12,12 @@ struct ContentView: View {
         animation: .default
     ) private var reflections: FetchedResults<Reflection>
 
-    @State private var searchText = ""
     @State private var saveError: ReflectionStoreError?
     @State private var pendingDelete: Reflection?
     @State private var deletePulse = 0
 
-    private var filtered: [Reflection] {
-        let items = Array(reflections)
-        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { return items }
-        return items.filter { reflection in
-            reflection.titleText.localizedCaseInsensitiveContains(query)
-                || reflection.bodyText.localizedCaseInsensitiveContains(query)
-                || reflection.categoryName.localizedCaseInsensitiveContains(query)
-        }
-    }
-
     private var grouped: [(String, [Reflection])] {
-        let groups = Dictionary(grouping: filtered, by: \.categoryName)
+        let groups = Dictionary(grouping: Array(reflections), by: \.categoryName)
         return ReflectionCategory.allCases.compactMap { category in
             let items = groups[category.rawValue] ?? []
             return items.isEmpty ? nil : (category.rawValue, items)
@@ -51,16 +39,14 @@ struct ContentView: View {
                 }
             } else {
                 VStack(alignment: .leading, spacing: 0) {
-                    if searchText.isEmpty {
-                        TodayPromptCard(
-                            wroteToday: reflections.contains { Calendar.current.isDateInToday($0.createdAt) },
-                            prompt: todayPrompt,
-                            onWrite: { onCompose(todayPrompt) }
-                        )
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
-                        .padding(.bottom, 12)
-                    }
+                    TodayPromptCard(
+                        wroteToday: reflections.contains { Calendar.current.isDateInToday($0.createdAt) },
+                        prompt: todayPrompt,
+                        onWrite: { onCompose(todayPrompt) }
+                    )
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    .padding(.bottom, 12)
                     List {
                         ForEach(grouped, id: \.0) { category, items in
                             Section(category) {
@@ -83,8 +69,7 @@ struct ContentView: View {
                 }
             }
         }
-        .navigationTitle("Reflectime")
-        .searchable(text: $searchText, prompt: "Search reflections")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("New Reflection", systemImage: "plus") {
