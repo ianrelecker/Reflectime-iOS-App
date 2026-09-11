@@ -6,6 +6,7 @@ struct ReflectionPin: Identifiable, Hashable {
     let id: UUID
     let title: String
     let coordinate: CLLocationCoordinate2D
+    let objectID: NSManagedObjectID
 
     static func == (lhs: ReflectionPin, rhs: ReflectionPin) -> Bool {
         lhs.id == rhs.id
@@ -27,6 +28,8 @@ struct MapViewAll: View {
     @State private var pins: [ReflectionPin] = []
     @State private var focusIndex = 0
     @State private var position: MapCameraPosition = .automatic
+    @State private var opened: Reflection?
+    @State private var showDetail = false
 
     private var locatedCount: Int {
         reflections.filter(\.hasLocation).count
@@ -50,27 +53,48 @@ struct MapViewAll: View {
             } else {
                 Map(position: $position) {
                     ForEach(pins) { pin in
-                        Marker(pin.title, coordinate: pin.coordinate)
-                            .tint(pins.indices.contains(focusIndex) && pins[focusIndex].id == pin.id ? Color.accentColor : Color.secondary)
+                        Annotation(pin.title, coordinate: pin.coordinate, anchor: .bottom) {
+                            Button {
+                                handlePinTap(pin)
+                            } label: {
+                                Image(systemName: isFocused(pin) ? "mappin.circle.fill" : "mappin.circle")
+                                    .font(.title)
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.white, isFocused(pin) ? Color.accentColor : Color.secondary)
+                                    .shadow(radius: 2)
+                            }
+                            .accessibilityLabel(pin.title)
+                            .accessibilityHint(isFocused(pin) ? "Opens this reflection" : "Zooms to this reflection")
+                        }
                     }
                     if let user = location.user {
-                        Marker("You", systemImage: "location.fill", coordinate: user.coordinate)
-                            .tint(.blue)
+                        Annotation("You", coordinate: user.coordinate) {
+                            Image(systemName: "location.circle.fill")
+                                .font(.title2)
+                                .foregroundStyle(.white, Color.blue)
+                        }
                     }
                 }
                 .mapStyle(.standard)
                 .safeAreaInset(edge: .top) {
                     if let focused {
                         HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Places you’ve reflected")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(focused.title)
-                                    .font(.headline)
-                                    .lineLimit(1)
+                            Button {
+                                open(focused)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Places you’ve reflected")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Text(focused.title)
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+                                        .lineLimit(1)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            Spacer()
+                            .buttonStyle(.plain)
+                            .accessibilityHint("Opens this reflection")
                             Button("Next", systemImage: "chevron.right") {
                                 showNext()
                             }
@@ -87,6 +111,11 @@ struct MapViewAll: View {
             }
         }
         .navigationTitle("Map")
+        .navigationDestination(isPresented: $showDetail) {
+            if let opened {
+                NoteDetail(reflection: opened)
+            }
+        }
         .onAppear {
             rebuildPins()
             location.refresh()
@@ -101,20 +130,57 @@ struct MapViewAll: View {
         return pins[focusIndex]
     }
 
+    private func isFocused(_ pin: ReflectionPin) -> Bool {
+        focused?.id == pin.id
+    }
+
+    private func handlePinTap(_ pin: ReflectionPin) {
+        if isFocused(pin) {
+            open(pin)
+            return
+        }
+        if let index = pins.firstIndex(where: { $0.id == pin.id }) {
+            focusIndex = index
+        }
+        withAnimation {
+            position = .region(
+                MKCoordinateRegion(
+                    center: pin.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.04, longitudeDelta: 0.04)
+                )
+            )
+        }
+    }
+
+    private func open(_ pin: ReflectionPin) {
+        if let match = reflections.first(where: { $0.objectID == pin.objectID }) {
+            opened = match
+            showDetail = true
+            return
+        }
+        if let match = reflections.first(where: { $0.id == pin.id }) {
+            opened = match
+            showDetail = true
+        }
+    }
+
     private func rebuildPins() {
         pins = reflections.compactMap { reflection in
             guard reflection.hasLocation else { return nil }
             return ReflectionPin(
                 id: reflection.id ?? UUID(),
                 title: reflection.titleText,
-                coordinate: reflection.coordinate
+                coordinate: reflection.coordinate,
+                objectID: reflection.objectID
             )
         }
-        focusIndex = 0
-        if let first = pins.first {
+        if focusIndex >= pins.count {
+            focusIndex = 0
+        }
+        if let focused {
             position = .region(
                 MKCoordinateRegion(
-                    center: first.coordinate,
+                    center: focused.coordinate,
                     span: MKCoordinateSpan(latitudeDelta: 0.18, longitudeDelta: 0.18)
                 )
             )
@@ -129,7 +195,7 @@ struct MapViewAll: View {
                 position = .region(
                     MKCoordinateRegion(
                         center: focused.coordinate,
-                        span: MKCoordinateSpan(latitudeDelta: 0.12, longitudeDelta: 0.12)
+                        span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
                     )
                 )
             }

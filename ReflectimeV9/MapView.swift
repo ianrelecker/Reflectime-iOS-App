@@ -48,20 +48,22 @@ struct MapView: View {
         .clipShape(.rect(cornerRadius: 12))
         .onTapGesture {
             guard interactive else { return }
-            openInMaps()
+            zoomIn()
         }
         .accessibilityAddTraits(interactive ? .isButton : [])
         .accessibilityLabel("Map of this reflection")
-        .accessibilityHint(interactive ? "Opens in Maps" : "")
+        .accessibilityHint(interactive ? "Zooms in" : "")
     }
 
-    private func openInMaps() {
-        var components = URLComponents(string: "https://maps.apple.com/")
-        components?.queryItems = [
-            URLQueryItem(name: "ll", value: "\(place.location.latitude),\(place.location.longitude)")
-        ]
-        guard let url = components?.url else { return }
-        UIApplication.shared.open(url)
+    private func zoomIn() {
+        withAnimation {
+            position = .region(
+                MKCoordinateRegion(
+                    center: place.location,
+                    span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)
+                )
+            )
+        }
     }
 }
 
